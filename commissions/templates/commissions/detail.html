@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ commission.title }}</title>
+</head>
+<body>
+    <h1>{{ commission.title }}</h1>
+    <p>{{ commission.description }}</p>
+    <p>People Required: {{ commission.people_required }}</p>
+    <p>Created On: {{ commission.created_on }}</p>
+    
+    <h2>Comments</h2>
+    <ul>
+        {% for comment in commission.comments.all %}
+            <li>{{ comment.entry }} ({{ comment.created_on }})</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
