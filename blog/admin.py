@@ -5,7 +5,7 @@ from .models import ArticleCategory, Article
 class ArticleInline(admin.TabularInline):
     model = Article
 
-    search_fields = ('name', 'category', 'created_on', 'entry', )
+    search_fields = ('title', 'category', 'created_on', 'entry', )
 
 class ArticleCategoryAdmin(admin.ModelAdmin):
     model = ArticleCategory
@@ -13,17 +13,17 @@ class ArticleCategoryAdmin(admin.ModelAdmin):
 
     search_fields = ('name', )
 
-    ('Details', {
-        'ingredients':
-            ('name', 'quantity')
-    })
-
 class ArticleAdmin(admin.ModelAdmin):
     model=Article
+    list_display = ('title', 'created_on',)
+    list_filter = ('category',)
+
     fieldsets = [
         ('Details', {
             'fields': [
-                ('name', 'entry'), 'articlecategory'
+                'title',
+                'entry', 
+                'category'
             ]
         }),
     ]
