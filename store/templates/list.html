@@ -11,7 +11,7 @@
 
     <h2>All products</h2> 
     <ul>
-        {% for product in products %}
+        {% for product in all_products %}
             <li>
                 <a href="{% url 'detail_view' product.id %}">{{ product.name }}</a>
             </li>
