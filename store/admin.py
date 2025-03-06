@@ -1,3 +1,14 @@
 from django.contrib import admin
+from store import models
+from .models import ProductType, Product
 
-# Register your models here.
+class ProductTypeAdmin(admin.ModelAdmin):
+    model = ProductType
+    list_display = ['name', 'description']
+
+class ProductAdmin(admin.ModelAdmin):
+    model = Product
+    list_display = ['name', 'product_type', 'description', 'price']
+
+admin.site.register(ProductType, ProductTypeAdmin)
+admin.site.register(Product, ProductAdmin)
