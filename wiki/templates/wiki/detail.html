@@ -6,8 +6,8 @@
 <p>{{ category.description }}</p>
 {% for article in category.articles.all %}
     <h2>{{ article.title }}</h2>
-    <p>{{ article.entry }}</p>
-    <p>Created on: {{ article.created_on }}</p>
-    <p>Last updated on: {{ article.updated_on }}</p>
+    <p>{{ article.entry }}<br>
+    Created on: {{ article.created_on }}<br>
+    Last updated on: {{ article.updated_on }}</p>
 {% endfor %}
 {% endblock %}
