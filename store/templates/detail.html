@@ -3,9 +3,13 @@
     <title>Merchandise Store</title>
 </head>
 <body>
-    <h1>Products under (insert category)</h1> 
-    <ul> "test 1" </ul>
-    <ul> "test 2" </ul>
-    <ul> "test 3" </ul>
+    <header>
+        <h1>Merchandise Store</h1>
+    </header>
+    <hr>
+    <h1>{{ product.name }}</h1>
+    <p>{{ product.description }}</p>
+    <p>Price: ${{ product.price }}</p>
+    <a href="{% url 'list_view' %}">Back to Product List</a>    
 </body>
 </html>

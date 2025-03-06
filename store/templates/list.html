@@ -3,9 +3,20 @@
     <title>Merchandise Store</title>
 </head>
 <body>
-    <h1>Product Categories</h1>
-    <ul> "test 1" </ul>
-    <ul> "test 2" </ul>
-    <ul> "test 3" </ul>
+
+    <header>
+        <h1>Merchandise Store</h1>
+    </header>
+    <hr>
+
+    <h2>All products</h2> 
+    <ul>
+        {% for product in products %}
+            <li>
+                <a href="{% url 'detail_view' product.id %}">{{ product.name }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+
 </body>
 </html>
