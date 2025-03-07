@@ -1,0 +1,22 @@
+<html>
+<head>
+    <title>Merchandise Store</title>
+</head>
+<body>
+
+    <header>
+        <h1>Merchandise Store</h1>
+    </header>
+    <hr>
+
+    <h2>All products</h2> 
+    <ul>
+        {% for product in all_products %}
+            <li>
+                <a href="{% url 'detail_view' product.id %}">{{ product.name }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+</body>
+</html>
