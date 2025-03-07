@@ -1,6 +1,7 @@
 from django.db import models
 from django.urls import reverse
 
+
 class ArticleCategory(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField
@@ -11,10 +12,11 @@ class ArticleCategory(models.Model):
         verbose_name = 'category'
         verbose_name_plural = 'categories'
 
+
 class Article(models.Model):
     title = models.CharField(max_length=255)
     category = models.ForeignKey(
-        ArticleCategory, 
+        ArticleCategory,
         on_delete=models.SET_NULL,
         null=True,
         related_name='category'
