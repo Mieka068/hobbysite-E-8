@@ -6,11 +6,13 @@ from .models import ArticleCategory
 class ArticleListView(ListView):
     model = ArticleCategory
     template_name = 'wiki/list.html'
+    context_object_name = 'categories'
 
 
 class ArticleDetailView(DetailView):
     model = ArticleCategory
     template_name = 'wiki/list.html'
+    context_object_name = 'category'
 
 
 def article_list(request):
