@@ -1,24 +1,17 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% load static %}
 
-<html>
-<head>
-    <title>Merchandise Store</title>
-</head>
-<body>
+{% block title %}Merchandise Store{% endblock %}
 
-    <header>
-        <h1>Merchandise Store</h1>
-    </header>
-    <hr>
-
-    <h2>All products</h2> 
+{% block content %}
+    <h1>Available Products</h1>
     <ul>
         {% for product in all_products %}
             <li>
-                <a href="{% url 'detail_view' product.id %}">{{ product.name }}</a>
+                <a href="{% url 'store:detail_view' product.id %}">{{ product.name }}</a>
             </li>
+        {% empty %}
+            <p>No products available.</p>
         {% endfor %}
     </ul>
-
-</body>
-</html>
+{% endblock %}
