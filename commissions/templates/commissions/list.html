@@ -8,9 +8,11 @@
         {% for commission in commissions %}
             <div class="commission-box">
                 <a href="{% url 'commissions:detail' commission.id %}">{{ commission.title }}</a>
-            </div>
+            </div>   
         {% empty %}
+
             <p>No commissions available.</p>
+
         {% endfor %}
     </div>
 {% endblock %}

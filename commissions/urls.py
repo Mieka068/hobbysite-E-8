@@ -1,6 +1,7 @@
 from django.urls import path
 from commissions import views
 
+
 app_name = "commissions"
 
 urlpatterns = [

@@ -17,10 +17,13 @@
                 <p class="timestamp">Posted on: {{ comment.created_on }}</p>
             </div>
         {% empty %}
+
             <p>No comments yet.</p>
+
         {% endfor %}
     </div>
+
     <div class="back-button-container">
         <a href="{% url 'commissions:list' %}" class="back-button">← Back to Commissions List</a>
-    </div>
+    </div> 
 {% endblock %}
