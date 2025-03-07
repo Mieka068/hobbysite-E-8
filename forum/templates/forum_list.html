@@ -9,9 +9,9 @@
     <div id="content">
         <h1>Forum</h1>
         <ul>
-            {% for recipe in recipes %}
+            {% for post in post %}
                 <li>
-                    <h2>{{ recipe.name }}</h2>
+                    <h2>{{ post.title }}</h2>
                     <a href="{% url 'forum_thread' post.id %}"> {{ post.title }}</a> - {{ post.created_on }}
                 </li>
             {% endfor %}
