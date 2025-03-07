@@ -7,6 +7,6 @@ def forum_list(request):
 
 def forum_thread(request, post_id):
     post = get_object_or_404(Post, id=post_id)
-    return render(request, 'forum/forum_thread.html', {'post_id': post_id})
+    return render(request, 'forum/forum_thread.html', {'post': post})
 
 # Create your views here.
