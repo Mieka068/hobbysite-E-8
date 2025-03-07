@@ -18,5 +18,12 @@ from django.contrib import admin
 from django.urls import path
 
 urlpatterns = [
+<<<<<<< Updated upstream
     path('admin/', admin.site.urls),
+=======
+    path("admin/", admin.site.urls),
+    path("commissions/", include("commissions.urls")),
+    path('admin/', admin.site.urls),
+    path('', include('forum.urls', namespace="forum")),
+>>>>>>> Stashed changes
 ]
