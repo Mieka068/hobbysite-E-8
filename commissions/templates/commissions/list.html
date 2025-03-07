@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Commission List{% endblock %}
+
+{% block content %}
+    <h1>Commissions</h1>
+    <div class="commissions-list">
+        {% for commission in commissions %}
+            <div class="commission-box">
+                <a href="{% url 'commissions:detail' commission.id %}">{{ commission.title }}</a>
+            </div>   
+        {% empty %}
+
+            <p>No commissions available.</p>
+
+        {% endfor %}
+    </div>
+{% endblock %}

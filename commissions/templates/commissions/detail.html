@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}{{ commission.title }}{% endblock %}
+
+{% block content %}
+    <h1>{{ commission.title }}</h1>
+    <p>{{ commission.description }}</p>
+    <p><strong>People Required:</strong> {{ commission.people_required }}</p>
+    <p><strong>Created On:</strong> {{ commission.created_on }}</p>
+    <p><strong>Updated On:</strong> {{ commission.updated_on }}</p>
+
+    <h2>Comments</h2>
+    <div class="comments">
+        {% for comment in commission.comments.all %}
+            <div class="comment-box">
+                <p>{{ comment.entry }}</p>
+                <p class="timestamp">Posted on: {{ comment.created_on }}</p>
+            </div>
+        {% empty %}
+
+            <p>No comments yet.</p>
+
+        {% endfor %}
+    </div>
+
+    <div class="back-button-container">
+        <a href="{% url 'commissions:list' %}" class="back-button">← Back to Commissions List</a>
+    </div> 
+{% endblock %}
