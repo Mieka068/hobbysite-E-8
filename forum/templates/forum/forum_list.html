@@ -1,0 +1,20 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Forum</title>
+</head>
+<body>
+    <div id="content">
+        <h1>Forum Categories</h1>
+        <ul>
+            {% for category in categories %}
+                <li>
+                    <a href="{{ category.get_absolute_url }}"> {{ category.name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

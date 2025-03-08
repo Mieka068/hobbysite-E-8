@@ -10,7 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 import os
+
 from pathlib import Path
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -39,11 +41,11 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
+    'django.contrib.staticfiles',\
     'commissions',
     'blog',
     'wiki',
-    'store',
+    'store',\
     'forum',
 ]
 
