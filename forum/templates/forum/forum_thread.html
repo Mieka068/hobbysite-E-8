@@ -1,18 +1,13 @@
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <title>Forums - {{ category.name }} </title>
-</head>
-<body>
-    <h1>{{ category.name }}</h1>
-    <p>{{ category.description }}</p>
-    {% for post in category.posts.all %}
-        <h2>{{ post.title }}</h2>
-        <p>{{ post.entry }}<br>
-        Created on: {{ post.created_on }}<br>
-        Last updated on: {{ post.updated_on}}</p>
-    {% endfor %}
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block title %}Forums - {{ category.name }}{% endblock %}
+{% block content %}
+<h1>{{ category.name }}</h1>
+<p>{{ category.description }}</p>
+{% for post in category.posts.all %}
+    <h2>{{ post.title }}</h2>
+    <p>{{ post.entry }}<br>
+    Created on: {{ post.created_on }}<br>
+    Last updated on: {{ post.updated_on}}</p>
+{% endfor %}
+{% endblock %}
