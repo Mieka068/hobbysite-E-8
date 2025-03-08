@@ -21,6 +21,7 @@ class Article(models.Model):
     category = models.ForeignKey(
         ArticleCategory,
         on_delete=models.CASCADE,
+        related_name='articles',
     )
     entry = models.TextField
     created_on = models.DateTimeField(auto_now_add=True)

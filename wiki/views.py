@@ -11,7 +11,7 @@ class ArticleListView(ListView):
 
 class ArticleDetailView(DetailView):
     model = ArticleCategory
-    template_name = 'wiki/list.html'
+    template_name = 'wiki/detail.html'
     context_object_name = 'category'
 
 
