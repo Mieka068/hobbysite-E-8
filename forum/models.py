@@ -9,14 +9,19 @@ class PostCategory(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('forum_thread', args=(self.name))
+        return reverse('forum:forum_thread', args=[str(self.id)])
     
     class Meta:
         ordering = ['name']
 
 class Post(models.Model):
     title = models.CharField(max_length=255)
-    category = models.ForeignKey(PostCategory, on_delete=models.SET_NULL, null=True)
+    category = models.ForeignKey(
+        PostCategory,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='posts',
+        )
     entry = models.TextField()
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now_add=True)

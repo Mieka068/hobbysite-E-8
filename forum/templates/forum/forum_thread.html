@@ -3,16 +3,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>Forums - {{ post.title }} </title>
+    <title>Forums - {{ category.name }} </title>
 </head>
 <body>
-    <h1> {{ post.title }} </h1>
-    <p> Category: {{ post.Category.name }} </p>
-    <p> Created On: {{ post.created_on }} </p>
-    <p> Last Updated: {{ post.updated_on }} </p>
-    <p> {{ post.entry }} </p>
-    
-    <a href = "{% url 'forum_list' %}">Back to Forums</a>
-    
+    <h1>{{ category.name }}</h1>
+    <p>{{ category.description }}</p>
+    {% for post in category.posts.all %}
+        <h2>{{ post.title }}</h2>
+        <p>{{ post.entry }}<br>
+        Created on: {{ post.created_on }}<br>
+        Last updated on: {{ post.updated_on}}</p>
+    {% endfor %}
 </body>
 </html>
