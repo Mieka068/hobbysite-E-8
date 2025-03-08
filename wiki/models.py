@@ -10,7 +10,7 @@ class ArticleCategory(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('article_detail', args=[str(self.name)])
+        return reverse('wiki:article_detailgit ', args=[str(self.id)])
 
     class Meta:
         ordering = ['name']
@@ -21,6 +21,7 @@ class Article(models.Model):
     category = models.ForeignKey(
         ArticleCategory,
         on_delete=models.CASCADE,
+        related_name='articles',
     )
     entry = models.TextField
     created_on = models.DateTimeField(auto_now_add=True)

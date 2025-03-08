@@ -11,7 +11,7 @@ class ArticleListView(ListView):
 
 class ArticleDetailView(DetailView):
     model = ArticleCategory
-    template_name = 'wiki/list.html'
+    template_name = 'wiki/detail.html'
     context_object_name = 'category'
 
 
@@ -21,4 +21,4 @@ def article_list(request):
 
 def article_detail(request, pk):
     category = get_object_or_404(ArticleCategory, pk=pk)
-    return render(request, 'wiki.detail.html', {'category': category})
+    return render(request, 'wiki/detail.html', {'category': category})
