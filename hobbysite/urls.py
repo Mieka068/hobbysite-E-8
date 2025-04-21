@@ -9,4 +9,5 @@ urlpatterns = [
     path('wiki/', include('wiki.urls', namespace='wiki')),
     path('merchstore/', include('store.urls')),
     path('forum/', include('forum.urls', namespace="forum")),
+    path("", include("user_management.urls")),
 ]
