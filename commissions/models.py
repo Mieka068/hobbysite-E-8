@@ -3,17 +3,24 @@ from django.utils.timezone import now
 
 
 class Commission(models.Model):
+    STATUS_CHOICES = [
+        ('Open', 'Open'),
+        ('Full', 'Full'),
+        ('Completed', 'Completed'),
+        ('Discontinued', 'Discontinued'),
+    ]
+
     title = models.CharField(max_length=255)
     description = models.TextField()
-    people_required = models.PositiveIntegerField()
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Open')
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ["created_on"]  # Ascending order
+        ordering = ['created_on']  # Ascending by default
 
     def __str__(self):
-        return self.title
+        return f"{self.title} ({self.status})"
 
 
 class Comment(models.Model):
