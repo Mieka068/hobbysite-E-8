@@ -23,14 +23,30 @@ class Commission(models.Model):
         return f"{self.title} ({self.status})"
 
 
-class Comment(models.Model):
-    commission = models.ForeignKey(Commission, on_delete=models.CASCADE, related_name="comments")
-    entry = models.TextField()
-    created_on = models.DateTimeField(auto_now_add=True)
-    updated_on = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        ordering = ["-created_on"]  # Descending order
+class Job(models.Model):
+    commission = models.ForeignKey(Commission, on_delete=models.CASCADE, related_name="jobs")
+    role = models.CharField(max_length=255)
+    manpower_required = models.PositiveIntegerField()
+    
+    STATUS_CHOICES = [
+        ('Open', 'Open'),
+        ('Full', 'Full'),
+    ]
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Open')
 
     def __str__(self):
-        return f"Comment on {self.commission.title}"
+        return f"{self.role} ({self.status})"
+
+    class Meta:
+        # Custom ordering: Open < Full, so we use a CASE WHEN to simulate it
+        ordering = [
+            models.Case(
+                models.When(status='Open', then=models.Value(0)),
+                models.When(status='Full', then=models.Value(1)),
+                output_field=models.IntegerField(),
+            ),
+            '-manpower_required',
+            'role',
+        ]
+
+
