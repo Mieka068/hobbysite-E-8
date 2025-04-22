@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}{{ view.object|default:"Create" }} Commission{% endblock %}
+
+{% block content %}
+  <h1>{% if view.object %}Edit{% else %}Create{% endif %} Commission</h1>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <h2>Jobs</h2>
+    {{ job_formset.management_form }}
+    {% for form in job_formset %}
+      <div class="commission-box">
+        {{ form.as_p }}
+        {% if form.instance.pk %}
+          <p>Existing Job</p>
+        {% endif %}
+      </div>
+    {% endfor %}
+    <button type="submit">Save</button>
+  </form>
+
+  <div class="back-button-container">
+    <a href="{% url 'commissions:list' %}" class="back-button">← Back to List</a>
+  </div>
+{% endblock %}
