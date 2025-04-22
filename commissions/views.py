@@ -1,6 +1,9 @@
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView
-from .models import Commission
+from .models import Commission, JobApplication, Job
+from django.db.models import Case, When, Value, IntegerField, Sum, Count, Q
+from django.contrib.auth.mixins import LoginRequiredMixin
+from user_management.models import Profile
 
 
 class CommissionListView(ListView):
@@ -8,8 +11,68 @@ class CommissionListView(ListView):
     template_name = "commissions/list.html"
     context_object_name = "commissions"
 
+    def get_queryset(self):
+        # Custom sort order for status
+        status_order = Case(
+            When(status='Open', then=Value(0)),
+            When(status='Full', then=Value(1)),
+            When(status='Completed', then=Value(2)),
+            When(status='Discontinued', then=Value(3)),
+            default=Value(4),
+            output_field=IntegerField(),
+        )
+
+        return Commission.objects.all().order_by(status_order, '-created_on')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        user = self.request.user
+        if user.is_authenticated:
+            # Commissions created by the user
+            context["my_commissions"] = Commission.objects.filter(poster=user)
+
+            # Commissions the user has applied to (via JobApplication)
+            context["applied_commissions"] = Commission.objects.filter(
+                job__jobapplication__applicant=user.profile
+            ).distinct()
+        
+        return context
+
 
 class CommissionDetailView(DetailView):
     model = Commission
     template_name = "commissions/detail.html"
     context_object_name = "commission"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        commission = self.get_object()
+
+        # Get all Jobs under this commission
+        jobs = Job.objects.filter(commission=commission).annotate(
+            accepted_count=Count('jobapplication', filter=Q(jobapplication__status='Accepted'))
+        )
+
+        # Calculate total manpower required and open manpower
+        total_required = jobs.aggregate(total=Sum('manpower_required'))['total'] or 0
+        total_open = sum(
+            max(job.manpower_required - job.accepted_count, 0) for job in jobs
+        )
+
+        context["jobs"] = jobs
+        context["total_manpower_required"] = total_required
+        context["open_manpower"] = total_open
+
+        # Check if user is authenticated
+        user = self.request.user
+        if user.is_authenticated:
+            profile = get_object_or_404(Profile, user=user)
+            context["user_profile"] = profile
+            context["is_owner"] = commission.poster == profile
+        else:
+            context["user_profile"] = None
+            context["is_owner"] = False
+
+        return context
+
