@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.timezone import now
+from user_management.models import Profile
 
 
 class Commission(models.Model):
@@ -50,3 +51,28 @@ class Job(models.Model):
         ]
 
 
+class JobApplication(models.Model):
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Accepted', 'Accepted'),
+        ('Rejected', 'Rejected'),
+    ]
+    
+    job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name="applications")
+    applicant = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="job_applications")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
+    applied_on = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.applicant.display_name} - {self.job.role} ({self.status})"
+
+    class Meta:
+        ordering = [
+            models.Case(
+                models.When(status='Pending', then=models.Value(0)),
+                models.When(status='Accepted', then=models.Value(1)),
+                models.When(status='Rejected', then=models.Value(2)),
+                output_field=models.IntegerField(),
+            ),
+            '-applied_on',
+        ]
