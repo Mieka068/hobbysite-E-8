@@ -1,29 +1,55 @@
-{% extends "base.html" %}
+{% extends "base.html" %} 
 
 {% block title %}{{ commission.title }}{% endblock %}
 
 {% block content %}
     <h1>{{ commission.title }}</h1>
-    <p>{{ commission.description }}</p>
-    <p><strong>People Required:</strong> {{ commission.people_required }}</p>
+    <p><strong>Description:</strong> {{ commission.description }}</p>
+    <p><strong>Status:</strong> {{ commission.status }}</p>
     <p><strong>Created On:</strong> {{ commission.created_on }}</p>
-    <p><strong>Updated On:</strong> {{ commission.updated_on }}</p>
+    <p><strong>Last Updated:</strong> {{ commission.updated_on }}</p>
 
-    <h2>Comments</h2>
-    <div class="comments">
-        {% for comment in commission.comments.all %}
-            <div class="comment-box">
-                <p>{{ comment.entry }}</p>
-                <p class="timestamp">Posted on: {{ comment.created_on }}</p>
+    {% if is_owner %}
+        <p><a href="{% url 'commissions:update' commission.id %}">Edit Commission</a></p>
+    {% endif %}
+
+    <hr>
+
+    <h2>Jobs for this Commission</h2>
+    <p><strong>Total Manpower Required:</strong> {{ total_manpower_required }}</p>
+    <p><strong>Open Manpower:</strong> {{ open_manpower }}</p>
+
+    {% if jobs %}
+        {% for job in jobs %}
+            <div class="commission-box">
+                <p><strong>Role:</strong> {{ job.role }}</p>
+                <p><strong>Manpower Required:</strong> {{ job.manpower_required }}</p>
+                <p><strong>Status:</strong> {{ job.status }}</p>
+                <p><strong>Accepted Applicants:</strong> {{ job.accepted_count }}</p>
+
+                {% if user.is_authenticated %}
+                    {% with already_applied=job.jobapplication_set.filter(applicant=request.user.profile).exists %}
+                        {% if already_applied %}
+                            <p><em>You have already applied to this job.</em></p>
+                        {% elif job.accepted_count < job.manpower_required %}
+                            <form action="{% url 'commissions:apply_to_job' job.id %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit">Apply to Job</button>
+                            </form>
+                        {% else %}
+                            <button disabled>Applications Full</button>
+                        {% endif %}
+                    {% endwith %}
+                {% else %}
+                    <p><a href="{% url 'login' %}">Login to apply</a></p>
+                {% endif %}
             </div>
-        {% empty %}
-
-            <p>No comments yet.</p>
-
         {% endfor %}
-    </div>
+    {% else %}
+        <p>No jobs posted for this commission yet.</p>
+    {% endif %}
 
     <div class="back-button-container">
-        <a href="{% url 'commissions:list' %}" class="back-button">← Back to Commissions List</a>
-    </div> 
+        <a href="{% url 'commissions:list' %}" class="back-button">← Back to List</a>
+    </div>
 {% endblock %}
