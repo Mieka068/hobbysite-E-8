@@ -177,4 +177,8 @@ cython_debug/
 .pypirc
 
 # Other files
+<<<<<<< HEAD
 superuser_details.txt
+=======
+super_user_details.txt
+>>>>>>> 0a289b8 (Renamed app from store to merchstore and made changes to relevant files.)
