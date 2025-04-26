@@ -1,7 +1,9 @@
 from django.http import HttpResponseRedirect
 from django.urls import include, path
 
-from store import views
+from merchstore import views
+
+app_name = 'merchstore'
 
 urlpatterns = [
     path('', views.list_view_redirect, name='list_view_redirect'),

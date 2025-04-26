@@ -1,5 +1,5 @@
 from django.contrib import admin
-from store import models
+from merchstore import models
 from .models import ProductType, Product
 
 class ProductTypeAdmin(admin.ModelAdmin):
