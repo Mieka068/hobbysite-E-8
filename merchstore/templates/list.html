@@ -1,15 +1,13 @@
-<html>
-<head>
-    <title>Merchandise Store</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
+{% block title %}Merchandise Store{% endblock %}
+
+{% block content %}
     <header>
         <h1>Merchandise Store</h1>
     </header>
-    <hr>
 
-    <h2>All products</h2> 
+    <h2>All products</h2>
     <ul>
         {% for product in all_products %}
             <li>
@@ -17,6 +15,4 @@
             </li>
         {% endfor %}
     </ul>
-
-</body>
-</html>
+{% endblock %}
