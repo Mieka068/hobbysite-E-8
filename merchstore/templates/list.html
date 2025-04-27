@@ -1,10 +1,13 @@
 {% extends 'base.html' %}
-{% load static %}
 
 {% block title %}Merchandise Store{% endblock %}
 
 {% block content %}
-    <h1>Available Products</h1>
+    <header>
+        <h1>Merchandise Store</h1>
+    </header>
+
+    <h2>All products</h2>
     <ul>
         {% for product in all_products %}
             <li>
