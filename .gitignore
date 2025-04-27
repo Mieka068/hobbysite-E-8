@@ -171,4 +171,4 @@ cython_debug/
 .pypirc
 
 # Other files
-super_user_details.txt
+superuser_details.txt
