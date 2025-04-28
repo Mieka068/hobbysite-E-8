@@ -8,6 +8,8 @@ from django.contrib.auth.decorators import login_required
 from .forms import JobApplicationForm, CommissionForm, JobFormSet
 from django.contrib import messages
 from django.urls import reverse_lazy
+from commissions.models import JobApplication
+
 
 class CommissionListView(ListView):
     model = Commission
@@ -29,19 +31,18 @@ class CommissionListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         user = self.request.user
+
         if user.is_authenticated:
             # Commissions created by the user
             context["my_commissions"] = Commission.objects.filter(poster=user)
 
-            # Commissions the user has applied to (via JobApplication)
-            context["applied_commissions"] = Commission.objects.filter(
-                job__jobapplication__applicant=user.profile
-            ).distinct()
+            # Replace the old applied_commissions query with this:
+            applications = JobApplication.objects.filter(applicant=user.profile)
+            applied_commission_ids = applications.values_list('job__commission_id', flat=True)
+            context["applied_commissions"] = Commission.objects.filter(id__in=applied_commission_ids)
         
         return context
-
 
 class CommissionDetailView(DetailView):
     model = Commission
@@ -52,33 +53,44 @@ class CommissionDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         commission = self.get_object()
 
-        # Get all Jobs under this commission
+        # Get all jobs under this commission and annotate accepted_count
         jobs = Job.objects.filter(commission=commission).annotate(
-            accepted_count=Count('jobapplication', filter=Q(jobapplication__status='Accepted'))
+            accepted_count=Count('applications', filter=Q(applications__status='Accepted'))
         )
 
-        # Calculate total manpower required and open manpower
+        user = self.request.user
+        user_applied_jobs = set()
+
+        if user.is_authenticated:
+            profile = get_object_or_404(Profile, user=user)
+
+            # Collect job IDs (as strings) the user has applied to
+            for job in jobs:
+                if job.applications.filter(applicant=profile).exists():
+                    user_applied_jobs.add(str(job.id))
+
+            context["user_profile"] = profile
+            context["is_owner"] = commission.poster == user
+        else:
+            # Not logged in: empty set, user hasn't applied to any jobs
+            user_applied_jobs = set()
+            context["user_profile"] = None
+            context["is_owner"] = False
+
+        # Aggregate manpower info
         total_required = jobs.aggregate(total=Sum('manpower_required'))['total'] or 0
         total_open = sum(
             max(job.manpower_required - job.accepted_count, 0) for job in jobs
         )
 
-        context["jobs"] = jobs
-        context["total_manpower_required"] = total_required
-        context["open_manpower"] = total_open
-
-        # Check if user is authenticated
-        user = self.request.user
-        if user.is_authenticated:
-            profile = get_object_or_404(Profile, user=user)
-            context["user_profile"] = profile
-            context["is_owner"] = commission.poster == user
-        else:
-            context["user_profile"] = None
-            context["is_owner"] = False
+        context.update({
+            "jobs": jobs,
+            "user_applied_jobs": user_applied_jobs,  # set of string job IDs
+            "total_manpower_required": total_required,
+            "open_manpower": total_open,
+        })
 
         return context
-
 
 @login_required
 def apply_to_job(request, job_id):
@@ -118,7 +130,7 @@ class CommissionCreateView(LoginRequiredMixin, CreateView):
         return data
 
     def form_valid(self, form):
-        form.instance.author = self.request.user
+        form.instance.poster = self.request.user
         response = super().form_valid(form)
         job_formset = self.get_context_data()['job_formset']
         if job_formset.is_valid():
