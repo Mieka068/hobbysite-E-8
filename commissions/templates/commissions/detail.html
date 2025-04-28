@@ -1,4 +1,4 @@
-{% extends "base.html" %} 
+{% extends "base.html" %}
 
 {% block title %}{{ commission.title }}{% endblock %}
 
@@ -28,8 +28,8 @@
                 <p><strong>Accepted Applicants:</strong> {{ job.accepted_count }}</p>
 
                 {% if user.is_authenticated %}
-                    {% with already_applied=job.jobapplication_set.filter(applicant=request.user.profile).exists %}
-                        {% if already_applied %}
+                    {% with job_id=job.id|stringformat:"s" %}
+                        {% if job_id in user_applied_jobs %}
                             <p><em>You have already applied to this job.</em></p>
                         {% elif job.accepted_count < job.manpower_required %}
                             <form action="{% url 'commissions:apply_to_job' job.id %}" method="post">
