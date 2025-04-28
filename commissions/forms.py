@@ -16,9 +16,8 @@ class CommissionForm(forms.ModelForm):
         }
 
 JobFormSet = inlineformset_factory(
-    Commission,
-    Job,
-    fields=['role', 'entry', 'manpower_required', 'status'],
+    Commission, Job,
+    fields=["role", "manpower_required", "status"],
     extra=1,
     can_delete=True
 )
