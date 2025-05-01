@@ -2,7 +2,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-
+from django.urls import reverse
 from .forms import ProfileForm
 from .models import Profile
 
@@ -14,7 +14,7 @@ def register_view(request):
             # Create a Profile when a new User is created
             Profile.objects.create(user=user, display_name=user.username, email=user.email)
             login(request, user)
-            return redirect('user_management:profile')  # redirect to homepage
+            return redirect('home')  # redirect to homepage
     else:
         form = UserCreationForm()
     return render(request, 'registration/register.html', {'form': form})
@@ -25,7 +25,7 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('user_management:profile')
+            return redirect('home')
     else:
         form = AuthenticationForm()
     return render(request, 'registration/login.html', {'form': form})
