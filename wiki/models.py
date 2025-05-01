@@ -10,9 +10,6 @@ class ArticleCategory(models.Model):
     def __str__(self):
         return self.name
 
-    def get_absolute_url(self):
-        return reverse('wiki:article_detail', args=[str(self.id)])
-
     class Meta:
         ordering = ['name']
 
@@ -36,6 +33,9 @@ class Article(models.Model):
 
     def __str__(self):
         return self.title
+    
+    def get_absolute_url(self):
+        return reverse('wiki:article_detail', args=[str(self.id)])
 
     class Meta:
         ordering = ['-created_on']
