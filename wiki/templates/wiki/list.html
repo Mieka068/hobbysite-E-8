@@ -1,24 +1,24 @@
 {% extends 'base.html' %}
 
-{% block title %}Article Categories{% endblock %}
+{% block title %}Wiki{% endblock %}
 {% block content %}
-<h1>Categories</h1>
-{% if user.is_authenticated %}
-    <h3>Your Articles</h3>
-    <ul>
-        {% for article in user_articles %}
-            <li><a href='{{ article.get_absolute_url }}'>article.title</a></li>
-        {% endfor %}
-    </ul>
-    <a href="{% url 'wiki:article_create' %}">Create New Article</a>
-{% endif %}
-{% for category in categories %}
-    <h3>category.name</h3>
-    category.description
-    <ul>
-        {% for article in category.articles.all %}
-            <li><a href='{{ article.get_absolute_url }}'>article.title</a></li>
-        {% endfor %}
-    </ul>
-{% endfor %}
+    <h1>Categories</h1>
+    {% if user.is_authenticated %}
+        <h3>Your Articles</h3>
+        <ul>
+            {% for article in user_articles %}
+                <li><a href='{{ article.get_absolute_url }}'>article.title</a></li>
+            {% endfor %}
+        </ul>
+        <a href="{% url 'wiki:article_create' %}">Create New Article</a>
+    {% endif %}
+    {% for category in categories %}
+        <h3>category.name</h3>
+        category.description
+        <ul>
+            {% for article in category.articles.all %}
+                <li><a href='{{ article.get_absolute_url }}'>article.title</a></li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
 {% endblock%}

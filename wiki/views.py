@@ -1,6 +1,9 @@
 from django.shortcuts import render, get_object_or_404
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
 from .models import ArticleCategory, Article
+from .forms import ArticleForm
 
 
 class ArticleListView(ListView):
@@ -20,3 +23,10 @@ class ArticleDetailView(DetailView):
     model = ArticleCategory
     template_name = 'wiki/detail.html'
     context_object_name = 'category'
+
+
+class ArticleCreateView(LoginRequiredMixin, CreateView):
+    model = Article
+    template_name = 'wiki/create.html'
+    form_class = ArticleForm
+    success_url = reverse_lazy('wiki:list')
