@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from .models import ArticleCategory, Article
@@ -20,13 +20,28 @@ class ArticleListView(ListView):
 
 
 class ArticleDetailView(DetailView):
-    model = ArticleCategory
+    model = Article
     template_name = 'wiki/detail.html'
-    context_object_name = 'category'
+    context_object_name = 'article'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        article = self.get_object
+        user = self.request.user
+        if user.is_authenticated:
+            profile = get_object_or_404(Profile, user=user)
+            context['is_owner'] = article.author == user
 
 
 class ArticleCreateView(LoginRequiredMixin, CreateView):
     model = Article
-    template_name = 'wiki/create.html'
+    template_name = 'wiki/create_update.html'
+    form_class = ArticleForm
+    success_url = reverse_lazy('wiki:list')
+
+
+class ArticleUpdateView(LoginRequiredMixin, UpdateView):
+    model = Article
+    template_name = 'wiki/create_update.html'
     form_class = ArticleForm
     success_url = reverse_lazy('wiki:list')

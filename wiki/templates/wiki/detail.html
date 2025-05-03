@@ -2,12 +2,20 @@
 
 {% block title %}{{ category.name }}{% endblock %}
 {% block content %}
-<h1>{{ category.name }}</h1>
-<p>{{ category.description }}</p>
-{% for article in category.articles.all %}
-    <h2>{{ article.title }}</h2>
-    <p>{{ article.entry }}<br>
-    Created on: {{ article.created_on }}<br>
-    Last updated on: {{ article.updated_on }}</p>
+    <a href="{% url 'wiki:list %}">Return to list of articles</a>
+    {{ article.header_image }}
+    <h1>{{ article.title }}</h1>
+    Created on: {{ article.created_on }}
+    Last updated on: {{ article.updated_on }}
+    {% if is_owner %}
+        <p><a href="{% url 'wiki:article update' article.id %}">Edit Article</a></p>
+    {% endif %}
+    <p>article.entry</p>
+    <h3>Read more from {{ article.category.name }}</h3>
+    <ul>
+        {% for readmore in article.category.articles.exclude(id=article.id) %}
+        <li><a href='readmore.get_absolute_url'>{{ readmore.title }}</a></li>
+        {% endfor %}
+    </ul>
 {% endfor %}
 {% endblock %}

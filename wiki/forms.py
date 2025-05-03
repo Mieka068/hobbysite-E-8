@@ -6,3 +6,4 @@ class ArticleForm(forms.ModelForm):
     class Meta:
         model = Article
         exclude = ['created_on', 'updated_on', 'author']
+        
