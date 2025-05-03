@@ -13,9 +13,17 @@
     <p>article.entry</p>
     <h3>Read more from {{ article.category.name }}</h3>
     <ul>
-        {% for readmore in article.category.articles.exclude(id=article.id) %}
+        {% for readmore in article.category.objects.exclude(id=article.id) %}
         <li><a href='readmore.get_absolute_url'>{{ readmore.title }}</a></li>
         {% endfor %}
     </ul>
+    <h3>Create a Comment</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Post</button>
+    </form>
+    <h3>Comments</h3>
+    {% for comment in article.comment%}
 {% endfor %}
 {% endblock %}

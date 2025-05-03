@@ -3,7 +3,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from .models import ArticleCategory, Article
-from .forms import ArticleForm
+from .forms import ArticleForm, CommentForm
 
 
 class ArticleListView(ListView):
@@ -23,6 +23,8 @@ class ArticleDetailView(DetailView):
     model = Article
     template_name = 'wiki/detail.html'
     context_object_name = 'article'
+    form_class = CommentForm
+    success_url = reverse_lazy('wiki:article_detail' )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -31,17 +33,18 @@ class ArticleDetailView(DetailView):
         if user.is_authenticated:
             profile = get_object_or_404(Profile, user=user)
             context['is_owner'] = article.author == user
+        return context
 
 
 class ArticleCreateView(LoginRequiredMixin, CreateView):
     model = Article
     template_name = 'wiki/create_update.html'
     form_class = ArticleForm
-    success_url = reverse_lazy('wiki:list')
+    success_url = reverse_lazy('wiki:article_list')
 
 
 class ArticleUpdateView(LoginRequiredMixin, UpdateView):
     model = Article
     template_name = 'wiki/create_update.html'
     form_class = ArticleForm
-    success_url = reverse_lazy('wiki:list')
+    success_url = reverse_lazy('wiki:article_list')

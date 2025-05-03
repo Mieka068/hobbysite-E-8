@@ -18,7 +18,7 @@
         <h3>category.name</h3>
         category.description
         <ul>
-            {% for article in category.articles.all %}
+            {% for article in category.objects.all %}
                 <li><a href='{{ article.get_absolute_url }}'>article.title</a></li>
             {% endfor %}
         </ul>
