@@ -15,7 +15,7 @@ class ArticleListView(ListView):
         context = super().get_context_data(**kwargs)
         user = self.request.user
         if user.is_authenticated:
-            context['user_articles'] = Article.objects.filter(poster=user)
+            context['user_articles'] = Article.objects.filter(author=user)
         return context
 
 
