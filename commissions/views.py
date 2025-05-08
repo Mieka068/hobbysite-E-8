@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from .models import Commission, JobApplication, Job, Profile
-from django.db.models import Case, When, Value, IntegerField, Sum, Count, Q
+from django.db.models import Case, When, Value, IntegerField, Sum, Count, Q, F
 from django.contrib.auth.mixins import LoginRequiredMixin
 from user_management.models import Profile
 from django.contrib.auth.decorators import login_required
@@ -55,7 +55,8 @@ class CommissionDetailView(DetailView):
 
         # Get all jobs under this commission and annotate accepted_count
         jobs = Job.objects.filter(commission=commission).annotate(
-            accepted_count=Count('applications', filter=Q(applications__status='Accepted'))
+            accepted_count=Count('applications', filter=Q(applications__status='Accepted')),
+            open_slots=F('manpower_required') - Count('applications', filter=Q(applications__status='Accepted'))
         )
 
         user = self.request.user
@@ -114,6 +115,27 @@ def apply_to_job(request, job_id):
     messages.success(request, "You have successfully applied to the job.")
     return redirect('commissions:detail', pk=job.commission.id)
 
+@login_required
+def accept_application(request, application_id):
+    application = get_object_or_404(JobApplication, pk=application_id)
+
+    # Check if the current user is the poster of the commission
+    if application.job.commission.poster != request.user:
+        messages.error(request, "You do not have permission to accept this application.")
+        return redirect('commissions:detail', pk=application.job.commission.id)
+
+    # Accept the application
+    application.status = 'Accepted'
+    application.save()
+
+    # After accepting, update job and commission statuses
+    application.job.update_status()
+    application.job.commission.update_status()
+
+    messages.success(request, "Application accepted!")
+    return redirect('commissions:detail', pk=application.job.commission.id)
+
+
 
 class CommissionCreateView(LoginRequiredMixin, CreateView):
     model = Commission
@@ -161,10 +183,7 @@ class CommissionUpdateView(LoginRequiredMixin, UpdateView):
         if job_formset.is_valid():
             job_formset.save()
 
-            # Check if all jobs are Full
-            if all(job.status == 'Full' for job in self.object.jobs.all()):
-                self.object.status = 'Full'
-                self.object.save()
+            self.object.update_status()
 
         else:
             return self.form_invalid(form)
