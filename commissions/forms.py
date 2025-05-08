@@ -10,7 +10,7 @@ class JobApplicationForm(forms.ModelForm):
 class CommissionForm(forms.ModelForm):
     class Meta:
         model = Commission
-        exclude = ['author', 'created_on', 'updated_on']
+        exclude = ['poster', 'created_on', 'updated_on']
         widgets = {
             'status': forms.Select()
         }
