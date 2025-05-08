@@ -53,7 +53,7 @@ class CommissionDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         commission = self.get_object()
 
-        # Get all jobs under this commission and annotate accepted_count
+        # Get all jobs and annotate accepted count
         jobs = Job.objects.filter(commission=commission).annotate(
             accepted_count=Count('applications', filter=Q(applications__status='Accepted')),
             open_slots=F('manpower_required') - Count('applications', filter=Q(applications__status='Accepted'))
@@ -64,8 +64,6 @@ class CommissionDetailView(DetailView):
 
         if user.is_authenticated:
             profile = get_object_or_404(Profile, user=user)
-
-            # Collect job IDs (as strings) the user has applied to
             for job in jobs:
                 if job.applications.filter(applicant=profile).exists():
                     user_applied_jobs.add(str(job.id))
@@ -73,31 +71,28 @@ class CommissionDetailView(DetailView):
             context["user_profile"] = profile
             context["is_owner"] = commission.poster == user
         else:
-            # Not logged in: empty set, user hasn't applied to any jobs
             user_applied_jobs = set()
             context["user_profile"] = None
             context["is_owner"] = False
 
-        # Aggregate manpower info
-        total_required = jobs.aggregate(total=Sum('manpower_required'))['total'] or 0
-        total_open = sum(
-            max(job.manpower_required - job.accepted_count, 0) for job in jobs
-        )
-
         context.update({
             "jobs": jobs,
-            "user_applied_jobs": user_applied_jobs,  # set of string job IDs
-            "total_manpower_required": total_required,
-            "open_manpower": total_open,
+            "user_applied_jobs": user_applied_jobs,
         })
 
         return context
+
 
 @login_required
 def apply_to_job(request, job_id):
     job = get_object_or_404(Job, pk=job_id)
     # Get Profile of the current user
     profile = request.user.profile
+
+    # ❌ Prevent applying to own commission
+    if job.commission.poster == request.user:
+        messages.error(request, "You cannot apply to your own commission's job.")
+        return redirect('commissions:detail', pk=job.commission.id)
 
     # Check if already applied
     if JobApplication.objects.filter(job=job, applicant=profile).exists():
@@ -133,6 +128,24 @@ def accept_application(request, application_id):
     application.job.commission.update_status()
 
     messages.success(request, "Application accepted!")
+    return redirect('commissions:detail', pk=application.job.commission.id)
+
+@login_required
+def reject_application(request, application_id):
+    application = get_object_or_404(JobApplication, pk=application_id)
+
+    # Only the commission owner can reject
+    if application.job.commission.poster != request.user:
+        messages.error(request, "You do not have permission to reject this application.")
+        return redirect('commissions:detail', pk=application.job.commission.id)
+
+    if application.status != "Pending":
+        messages.warning(request, "Only pending applications can be rejected.")
+    else:
+        application.status = "Rejected"
+        application.save()
+        messages.success(request, "Application rejected.")
+
     return redirect('commissions:detail', pk=application.job.commission.id)
 
 
