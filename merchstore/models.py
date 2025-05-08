@@ -1,6 +1,5 @@
 from django.db import models
 from django.urls import reverse
-
 class ProductType(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
@@ -19,7 +18,7 @@ class Product(models.Model):
         on_delete=models.SET_NULL,
         null = True,
         related_name = 'category')
-
+            
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
 
