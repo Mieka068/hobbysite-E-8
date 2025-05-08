@@ -6,6 +6,9 @@ from django.urls import reverse
 from .forms import ProfileForm
 from .models import Profile
 
+def homepage(request):
+    return render(request, 'user_management/homepage.html')
+
 def register_view(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
