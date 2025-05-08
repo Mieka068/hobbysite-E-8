@@ -49,4 +49,10 @@
             <p>No commissions available.</p>
         {% endfor %}
     </div>
+
+    <form method="POST" action="{% url 'user_management:logout' %}">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+    </form>
+    
 {% endblock %}
