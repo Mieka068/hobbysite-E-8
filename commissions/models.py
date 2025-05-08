@@ -22,6 +22,19 @@ class Commission(models.Model):
     class Meta:
         ordering = ['created_on']  # Ascending by default
 
+    def update_status(self):
+        # Only set to Full if ALL jobs are Full
+        jobs = self.jobs.all()
+
+        if all(job.status == 'Full' for job in self.jobs.all()):
+            if self.status != 'Full':
+                self.status = 'Full'
+                self.save()
+        else:
+            if self.status != 'Open':
+                self.status = 'Open'
+                self.save()
+
     def __str__(self):
         return f"{self.title} ({self.status})"
 
@@ -36,6 +49,18 @@ class Job(models.Model):
         ('Full', 'Full'),
     ]
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Open')
+    
+    def update_status(self):
+        accepted_count = self.applications.filter(status='Accepted').count()
+        if accepted_count >= self.manpower_required:
+            if self.status != 'Full':
+                self.status = 'Full'
+                self.save()
+        else:
+            if self.status != 'Open':
+                self.status = 'Open'
+                self.save()
+
 
     def __str__(self):
         return f"{self.role} ({self.status})"
