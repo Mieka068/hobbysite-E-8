@@ -13,6 +13,7 @@ urlpatterns = [
     path("detail/<int:pk>/", views.CommissionDetailView.as_view(), name="detail"),
     path('<int:job_id>/apply/', views.apply_to_job, name='apply_to_job'),
     path('application/<int:application_id>/accept/', views.accept_application, name='accept_application'),
+    path('application/<int:application_id>/reject/', views.reject_application, name='reject_application'),
     path("add/", CommissionCreateView.as_view(), name="create"),
     path("<int:pk>/edit/", CommissionUpdateView.as_view(), name="update"),
 ]
