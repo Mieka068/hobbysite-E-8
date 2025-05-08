@@ -16,8 +16,8 @@
     <hr>
 
     <h2>Jobs for this Commission</h2>
-    <p><strong>Total Manpower Required:</strong> {{ total_manpower_required }}</p>
-    <p><strong>Open Manpower:</strong> {{ open_manpower }}</p>
+    <!-- <p><strong>Total Manpower Required:</strong> {{ total_manpower_required }}</p>
+    <p><strong>Open Manpower:</strong> {{ open_manpower }}</p> -->
 
     {% if jobs %}
         {% for job in jobs %}
@@ -26,23 +26,40 @@
                 <p><strong>Manpower Required:</strong> {{ job.manpower_required }}</p>
                 <p><strong>Status:</strong> {{ job.status }}</p>
                 <p><strong>Accepted Applicants:</strong> {{ job.accepted_count }}</p>
+                <p><strong>Open Manpower:</strong> {{ job.open_slots }}</p>
+
+                <!-- Applications List -->
+                {% for app in job.applications.all %}
+                    <p>
+                        {{ app.applicant.display_name }} - {{ app.status }}
+                        {% if is_owner and app.status == "Pending" %}
+                            <a href="{% url 'commissions:accept_application' app.id %}">Accept</a>
+                        {% endif %}
+                    </p>
+                {% endfor %}
 
                 {% if user.is_authenticated %}
-                    {% with job_id=job.id|stringformat:"s" %}
-                        {% if job_id in user_applied_jobs %}
-                            <p><em>You have already applied to this job.</em></p>
-                        {% elif job.accepted_count < job.manpower_required %}
-                            <form action="{% url 'commissions:apply_to_job' job.id %}" method="post">
-                                {% csrf_token %}
-                                <button type="submit">Apply to Job</button>
-                            </form>
-                        {% else %}
-                            <button disabled>Applications Full</button>
-                        {% endif %}
-                    {% endwith %}
+                    {% if commission.poster == user %}
+                        <!-- Owner should not see apply button -->
+                        <p><em>You are the owner of this commission.</em></p>
+                    {% else %}
+                        {% with job_id=job.id|stringformat:"s" %}
+                            {% if job_id in user_applied_jobs %}
+                                <p><em>You have already applied to this job.</em></p>
+                            {% elif job.accepted_count < job.manpower_required %}
+                                <form action="{% url 'commissions:apply_to_job' job.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit">Apply to Job</button>
+                                </form>
+                            {% else %}
+                                <button disabled>Applications Full</button>
+                            {% endif %}
+                        {% endwith %}
+                    {% endif %}
                 {% else %}
                     <p><a href="{% url 'login' %}">Login to apply</a></p>
                 {% endif %}
+
             </div>
         {% endfor %}
     {% else %}
