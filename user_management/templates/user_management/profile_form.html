@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+  <h1>Edit Profile</h1>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save Changes</button>
+  </form>
+
+  <div class="back-button-container">
+    <a href="{% url 'user_management:profile' %}" class="back-button">← Back to Home</a>
+  </div>
+{% endblock %}
