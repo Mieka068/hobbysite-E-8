@@ -33,7 +33,8 @@
                     <p>
                         {{ app.applicant.display_name }} - {{ app.status }}
                         {% if is_owner and app.status == "Pending" %}
-                            <a href="{% url 'commissions:accept_application' app.id %}">Accept</a>
+                            <a href="{% url 'commissions:accept_application' app.id %}">Accept</a> |
+                            <a href="{% url 'commissions:reject_application' app.id %}">Reject</a>
                         {% endif %}
                     </p>
                 {% endfor %}
