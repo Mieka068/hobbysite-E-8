@@ -8,7 +8,7 @@ app_name = 'merchstore'
 =======
 >>>>>>> 8d2415d (Renamed app from store to merchstore and made changes to relevant files.)
 
-app_name = 'merchstore'
+app_name = 'store'
 
 urlpatterns = [
 <<<<<<< HEAD

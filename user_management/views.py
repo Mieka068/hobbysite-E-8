@@ -17,6 +17,9 @@ from forum.models import Thread
 # Profile Update View - Keep in Profile app
 =======
 
+def homepage(request):
+    return render(request, 'user_management/homepage.html')
+
 def register_view(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
