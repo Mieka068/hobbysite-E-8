@@ -7,7 +7,7 @@
         <h3>Your Articles</h3>
             <ul>
                 {% for article in user_articles %}
-                    <li><a href='{{ article.get_absolute_url }}'>article.title</a></li>
+                    <li><a href='{{ article.get_absolute_url }}'>{{ article.title }}</a></li>
                 {% empty %}
                     <p>You have not created any articles.</p>
                 {% endfor %}
@@ -15,11 +15,13 @@
         <p><a href="{% url 'wiki:article_create' %}">Create New Article</a></p>
     {% endif %}
     {% for category in categories %}
-        <h3>category.name</h3>
-        category.description
+        <h3>{{ category.name }}</h3>
+        {{ category.description }}
         <ul>
-            {% for article in category.objects.all %}
-                <li><a href='{{ article.get_absolute_url }}'>article.title</a></li>
+            {% for article in category.articles.all %}
+                {% if article in user_articles %}
+                    <li><a href='{{ article.get_absolute_url }}'>{{ article.title }}</a></li>
+                {% endif %}
             {% endfor %}
         </ul>
     {% endfor %}

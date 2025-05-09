@@ -1,19 +1,19 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ category.name }}{% endblock %}
+{% block title %}{{ article.title }}{% endblock %}
 {% block content %}
-    <a href="{% url 'wiki:list %}">Return to list of articles</a>
+    <p><a href="{% url 'wiki:article_list' %}">Return to list of articles</a></p>
     {{ article.header_image }}
     <h1>{{ article.title }}</h1>
-    Created on: {{ article.created_on }}
+    Created on: {{ article.created_on }} /
     Last updated on: {{ article.updated_on }}
-    {% if is_author %}
+    {% if user == article.author %}
         <p><a href="{% url 'wiki:article update' article.id %}">Edit Article</a></p>
     {% endif %}
-    <p>article.entry</p>
+    <p>{{ article.entry }}</p>
     <h3>Read more from {{ article.category.name }}</h3>
     <ul>
-        {% for readmore in article.category.objects.exclude(id=article.id) %}
+        {% for readmore in other_articles %}
         <li><a href='{{ readmore.get_absolute_url }}'>{{ readmore.title }}</a></li>
         {% empty %}
         <p>There are no other articles in this category.</p>
@@ -26,12 +26,11 @@
         <button type="submit">Post</button>
     </form>
     <h3>Comments</h3>
-    {% for comment in article.objects.all %}
+    {% for comment in article.comments.all %}
         <strong>{{ comment.author }}</strong>
         {{ comment.entry }}
         Created On: {{ comment.created_on }} / Last Updated On: {{ comment.updated_on}}<br>
     {% empty %}
         <p>No one has left a comment.</p>
     {% endfor %}
-{% endfor %}
 {% endblock %}
