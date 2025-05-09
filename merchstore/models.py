@@ -76,13 +76,15 @@ class Transaction(models.Model):
     buyer = models.ForeignKey(
         Profile,
         on_delete=models.SET_NULL,
-        related_name="transactions_of_buyer"
+        related_name="transactions_of_buyer",
+        null=True
     ) 
     
     product = models.ForeignKey(
         Product,
         on_delete=models.SET_NULL,
-        related_name="transactions_of_product"
+        related_name="transactions_of_product",
+        null=True
     ) 
     
     amount = models.PositiveIntegerField()
