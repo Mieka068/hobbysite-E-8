@@ -1,8 +1,17 @@
 from django.urls import path
-from .views import profile_update
+from . import views
 
 app_name = "user_management"
 
 urlpatterns = [
-    path("profile", profile_update, name="profile"),
+    #keep in Profile App
+    path('', views.homepage, name='homepage'),
+
+    # transfer to Accounts app
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
+    path('register/', views.register_view, name='register'),
+    
+    #keep in Profile App
+    path('profile/', views.profile_update, name='profile'),
 ]
