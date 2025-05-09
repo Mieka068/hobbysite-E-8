@@ -4,13 +4,45 @@
 {% block title %}{{ object.title }}{% endblock %}
 {% block content %}
 <ul>
+    <p><a href="{% url 'blog:article_list' %}">Back to Article Categories</a></p>
+    {% if object.header_img %}
+    <div class="article-header-image">
+        <img src="{{ object.header_img.url }}" alt="Header Image" style="max-width: 100%; height: auto;">
+    </div>
+    {% endif %}
     <h1>{{ object.title }}</h1>
     <p>{{ object.category.name }}</p>
     <p>Created on {{ object.created_on }}</p>
     {% if object.created_on|date:"Y-m-d H:i" != object.updated_on|date:"Y-m-d H:i" %}
         <p>Updated on {{ object.updated_on }}</p>
     {% endif %}
+    {% if object.author == request.user %}
+        <p><a href="{% url 'blog:article_update' %}">Edit Article</a></p>
     <br>
     <p>{{ object.entry }}</p>
+    <h2>Want to see more like this?</h2>
+    {% for article in other_articles %}
+        <h3><a href="{{ article.get_absolute_url }}">{{ article.title }}</a></h3>
+    {% empty %}
+        <p>It seems the author has no other articles.</p>
+    {% endfor %}
+    <br>
+    <h1>Comments</h1>
+    {% if user.is_authenticated %}
+        <form method="post">
+            {% csrf_token %}
+            {{ comment_form }}
+            <input type="submit" value="Submit">
+        </form>
+    {% endif %}
+    <br>
+    {% for comment in comments %}
+        <div class="comment">   
+            <h3>{{ comment.author }}</h3>
+            <p>{{ comment.entry }}</p>
+        </div>
+    {% empty %}
+        <p>Nothing to see here.</p>
+    {% endfor %}
 </ul>
 {% endblock %}
