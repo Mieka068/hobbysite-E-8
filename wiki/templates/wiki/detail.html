@@ -29,9 +29,9 @@
     {% endif %}
     <h3>Comments</h3>
     {% for comment in article.comments.all %}
-        <strong>{{ comment.author }}</strong>
-        {{ comment.entry }}
-        Created On: {{ comment.created_on }} / Last Updated On: {{ comment.updated_on}}<br>
+        <strong>{{ comment.author }}</strong><br/>
+        {{ comment.entry }}<br/>
+        Created On: {{ comment.created_on }} / Last Updated On: {{ comment.updated_on}}<br/><br/>
     {% empty %}
         <p>No one has left a comment.</p>
     {% endfor %}
