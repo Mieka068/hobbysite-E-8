@@ -18,10 +18,10 @@
         <h3>{{ category.name }}</h3>
         {{ category.description }}
         <ul>
-            {% for article in category.articles.all %}
-                {% if article in user_articles %}
-                    <li><a href='{{ article.get_absolute_url }}'>{{ article.title }}</a></li>
-                {% endif %}
+            {% for article in all_articles %}
+                <li><a href='{{ article.get_absolute_url }}'>{{ article.title }}</a></li>
+            {% empty %}
+                <p>There are currently no articles under this category.</p>
             {% endfor %}
         </ul>
     {% endfor %}

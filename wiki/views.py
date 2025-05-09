@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
@@ -18,6 +18,7 @@ class ArticleListView(ListView):
         if user.is_authenticated:
             profile = get_object_or_404(Profile, user=user)
             context['user_articles'] = Article.objects.filter(author=profile)
+            context['all_articles'] = Article.objects.exclude(author=profile)
         return context
 
 
@@ -30,9 +31,27 @@ class ArticleDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        article = self.get_object
-        context['other_articles'] = []
+        article = self.get_object()
+        user = self.request.user
+        profile = get_object_or_404(Profile, user=user)
+        context['profile'] = profile
+        context['other_articles'] = Article.objects.filter(category=article.category).exclude(id=article.id)
+        context['comment_form'] = CommentForm
         return context
+    
+    def post(self, request, *args, **kwargs):
+        article = self.get_object()
+        user = self.request.user
+        if user.is_authenticated:
+            profile = get_object_or_404(Profile, user=user)
+            comment_form = CommentForm(request.POST)
+            if comment_form.is_valid():
+                comment = comment_form.save(commit=False)
+                comment.article = article
+                comment.author = profile
+                comment.save()
+                return redirect('wiki:article_detail', pk=article.pk)
+        return self.get(request, *args, **kwargs)
 
 
 class ArticleCreateView(LoginRequiredMixin, CreateView):
@@ -45,8 +64,7 @@ class ArticleCreateView(LoginRequiredMixin, CreateView):
         user = self.request.user
         profile = get_object_or_404(Profile, user=user)
         form.instance.author = profile
-        response = super().form_valid(form)
-        return response
+        return super().form_valid(form)
 
 
 class ArticleUpdateView(LoginRequiredMixin, UpdateView):

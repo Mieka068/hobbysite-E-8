@@ -3,26 +3,26 @@
 {% block title %}{{ article.title }}{% endblock %}
 {% block content %}
     <p><a href="{% url 'wiki:article_list' %}">Return to list of articles</a></p>
-    {{ article.header_image }}
+    <img src="{{ article.header_image.url }}">
     <h1>{{ article.title }}</h1>
     Created on: {{ article.created_on }} /
     Last updated on: {{ article.updated_on }}
-    {% if user == article.author %}
-        <p><a href="{% url 'wiki:article update' article.id %}">Edit Article</a></p>
+    {% if profile == article.author %}
+        <p><a href="{% url 'wiki:article_update' article.id %}">Edit Article</a></p>
     {% endif %}
     <p>{{ article.entry }}</p>
     <h3>Read more from {{ article.category.name }}</h3>
     <ul>
         {% for readmore in other_articles %}
-        <li><a href='{{ readmore.get_absolute_url }}'>{{ readmore.title }}</a></li>
+            <li><a href='{{ readmore.get_absolute_url }}'>{{ readmore.title }}</a></li>
         {% empty %}
-        <p>There are no other articles in this category.</p>
+            <p>There are no other articles in this category.</p>
         {% endfor %}
     </ul>
     <h3>Create a Comment</h3>
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+        {{ comment_form }}
         <button type="submit">Post</button>
     </form>
     <h3>Comments</h3>

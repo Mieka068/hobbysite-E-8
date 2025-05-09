@@ -27,8 +27,8 @@ class Article(models.Model):
         null='TRUE',
         related_name='articles',
     )
-    entry = models.TextField(null='FALSE')
-    header_image = models.ImageField(null='TRUE')
+    entry = models.TextField(null='TRUE')
+    header_image = models.ImageField(upload_to='images/', null='TRUE')
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
 
@@ -52,7 +52,7 @@ class Comment(models.Model):
         Article,
         on_delete=models.CASCADE
     )
-    entry = models.TextField(null='FALSE')
+    entry = models.TextField(null='TRUE')
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
 

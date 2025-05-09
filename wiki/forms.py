@@ -11,4 +11,4 @@ class ArticleForm(forms.ModelForm):
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        exclude = ['created_on', 'updated_on', 'author']
+        fields = ['entry']
