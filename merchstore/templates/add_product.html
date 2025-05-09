@@ -1,0 +1,18 @@
+<!-- replace 'something' with anything else -->
+{% extends 'base.html' %}
+
+{% block title %}Add Something{% endblock %}
+
+{% block content %}
+    <h2>Make a new product listing!</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+    
+    <br>
+    <a href="{% url 'store:list_view' %}">Back to All Products</a>
+    <br>
+{% endblock %}
