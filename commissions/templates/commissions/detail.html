@@ -31,41 +31,64 @@
                 <!-- Applications List -->
                 {% for app in job.applications.all %}
                     {% if is_owner %}
-                        <!-- Owner sees everyone -->
-                        <p>
-                            {{ app.applicant.display_name }} - {{ app.status }}
-                            {% if app.status == "Pending" %}
-                                <a href="{% url 'commissions:accept_application' app.id %}">Accept</a> |
-                                <a href="{% url 'commissions:reject_application' app.id %}">Reject</a>
-                            {% endif %}
-                        </p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <p>{{ app.applicant.display_name }}</p>
+                            <div>
+                                {% if app.status == "Pending" %}
+                                    <span style="background-color: grey; color: white; padding: 5px 10px; border-radius: 5px;">Pending</span>
+                                    <a href="{% url 'commissions:accept_application' app.id %}">Accept</a> |
+                                    <a href="{% url 'commissions:reject_application' app.id %}">Reject</a>
+                                {% elif app.status == "Accepted" %}
+                                    <span style="background-color: green; color: white; padding: 5px 10px; border-radius: 5px;">Accepted</span>
+                                {% else %}
+                                    <span style="background-color: red; color: white; padding: 5px 10px; border-radius: 5px;">Rejected</span>
+                                {% endif %}
+                            </div>
+                        </div>
                     {% elif user.is_authenticated and app.applicant.user == user %}
-                        <!-- Applicant sees only their own application -->
-                        <p><em>Your application status:</em> {{ app.status }}</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <p><em>Your application</em></p>
+                            {% if app.status == "Pending" %}
+                                <span style="background-color: grey; color: white; padding: 5px 10px; border-radius: 5px;">Pending</span>
+                            {% elif app.status == "Accepted" %}
+                                <span style="background-color: green; color: white; padding: 5px 10px; border-radius: 5px;">Accepted</span>
+                            {% else %}
+                                <span style="background-color: red; color: white; padding: 5px 10px; border-radius: 5px;">Rejected</span>
+                            {% endif %}
+                        </div>
                     {% endif %}
                 {% endfor %}
+
 
                 {% if user.is_authenticated %}
                     {% if commission.poster == user %}
                         <!-- Owner should not see apply button -->
                         <p><em>You are the owner of this commission.</em></p>
                     {% else %}
-                        {% with job_id=job.id|stringformat:"s" %}
-                            {% if job_id in user_applied_jobs %}
-                                <p><em>You have already applied to this job.</em></p>
-                            {% elif job.accepted_count < job.manpower_required %}
-                                <form action="{% url 'commissions:apply_to_job' job.id %}" method="post">
-                                    {% csrf_token %}
-                                    <button type="submit">Apply to Job</button>
-                                </form>
-                            {% else %}
-                                <button disabled>Applications Full</button>
-                            {% endif %}
-                        {% endwith %}
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <p></p> <!-- Empty left side -->
+                            {% with job_id=job.id|stringformat:"s" %}
+                                {% if job_id in user_applied_jobs %}
+                                    <span style="background-color: grey; color: white; padding: 5px 10px; border-radius: 5px;">Already Applied</span>
+                                {% elif job.accepted_count < job.manpower_required %}
+                                    <form action="{% url 'commissions:apply_to_job' job.id %}" method="post" style="margin: 0;">
+                                        {% csrf_token %}
+                                        <button type="submit" style="background-color: #3498db; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">
+                                            Apply to Job
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <button disabled style="background-color: grey; color: white; padding: 5px 10px; border-radius: 5px; border: none;">
+                                        Applications Full
+                                    </button>
+                                {% endif %}
+                            {% endwith %}
+                        </div>
                     {% endif %}
                 {% else %}
                     <p><a href="{% url 'login' %}">Login to apply</a></p>
                 {% endif %}
+
 
             </div>
         {% endfor %}
