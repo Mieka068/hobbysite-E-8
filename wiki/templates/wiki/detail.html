@@ -19,12 +19,14 @@
             <p>There are no other articles in this category.</p>
         {% endfor %}
     </ul>
-    <h3>Create a Comment</h3>
-    <form method="post">
-        {% csrf_token %}
-        {{ comment_form }}
-        <button type="submit">Post</button>
-    </form>
+    {% if user.is_authenticated %}
+        <h3>Create a Comment</h3>
+        <form method="post">
+            {% csrf_token %}
+            {{ comment_form }}
+            <button type="submit">Post</button>
+        </form>
+    {% endif %}
     <h3>Comments</h3>
     {% for comment in article.comments.all %}
         <strong>{{ comment.author }}</strong>
