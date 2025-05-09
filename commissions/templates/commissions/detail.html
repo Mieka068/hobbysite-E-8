@@ -30,13 +30,19 @@
 
                 <!-- Applications List -->
                 {% for app in job.applications.all %}
-                    <p>
-                        {{ app.applicant.display_name }} - {{ app.status }}
-                        {% if is_owner and app.status == "Pending" %}
-                            <a href="{% url 'commissions:accept_application' app.id %}">Accept</a> |
-                            <a href="{% url 'commissions:reject_application' app.id %}">Reject</a>
-                        {% endif %}
-                    </p>
+                    {% if is_owner %}
+                        <!-- Owner sees everyone -->
+                        <p>
+                            {{ app.applicant.display_name }} - {{ app.status }}
+                            {% if app.status == "Pending" %}
+                                <a href="{% url 'commissions:accept_application' app.id %}">Accept</a> |
+                                <a href="{% url 'commissions:reject_application' app.id %}">Reject</a>
+                            {% endif %}
+                        </p>
+                    {% elif user.is_authenticated and app.applicant.user == user %}
+                        <!-- Applicant sees only their own application -->
+                        <p><em>Your application status:</em> {{ app.status }}</p>
+                    {% endif %}
                 {% endfor %}
 
                 {% if user.is_authenticated %}
