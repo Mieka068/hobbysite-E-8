@@ -1,13 +1,16 @@
-<html>
-<head>
-    <title>Merchandise Store</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block title %}Merchandise Store{% endblock %}
+
+{% block content %}
     <header>
         <h1>Merchandise Store</h1>
     </header>
-    <hr>
+
     <h2>{{ product.name }}</h2>
+    <p>
+        <b>Seller:</b> <i>{{ product.owner }}</i>
+    </p>
     <p>
         <b>Category:</b> <i>{{product.product_type}}</i>
     </p>
@@ -17,6 +20,36 @@
     <p>
         <b>Price:</b> ${{ product.price }}
     </p>
-    <a href="{% url 'list_view' %}">Back to Product List</a>    
-</body>
-</html>
+    <p>
+        <b>Stock:</b> {{ product.stock }}
+    </p>
+    <p>
+        <b>Status:</b> {{ product.status }}
+    </p>
+
+    <nav>
+        <br>     
+        <!-- login/logout buttons -->
+        {% if request.user.is_authenticated %}
+        
+        <form action="{% url 'logout' %}" method="post">
+            Currently logged in as <b>'{{ user.username }}'. </b>
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
+
+        {% else %}
+        Currently logged out. <a href="{% url 'login' %}">Login?</a>
+        {% endif %}
+
+        <!-- redirect links -->
+        <table align="center">
+            <tr>
+                <td><a href="{% url 'store:add_product_view' %}">{{ ' Make a new product listing' }}</a></td>
+                <td>  | </td>
+                <td><a href="{% url 'store:list_view' %}"><p>{{ 'Back to product list' }}</a></td>
+            </tr>
+        </table>
+        
+    </nav>  
+{% endblock %}

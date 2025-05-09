@@ -6,27 +6,46 @@
     <header>
         <h1>Merchandise Store</h1>
     </header>
-
-    <h2>All products</h2>
-    <ul>
-        {% for product in all_products %}
-            <li>
-                <a href="{% url 'store:detail_view' product.id %}">{{ product.name }}</a>
-            </li>
-        {% empty %}
-            <p>No products available.</p>
-        {% endfor %}
-    </ul>
+    {% if user.is_authenticated %}
+        <h2>🎉 Welcome back, {{ user.username }}!</h2>
+        <h2>🏷️ Your listings</h2>
+        <ul>
+            {% for product in owned_products %}
+                <li>
+                    <a href="{% url 'store:detail_view' product.id %}">{{ product.name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+        <h2>🛒 Other products</h2>
+        <ul>
+            {% for product in other_products %}
+                <li>
+                    <a href="{% url 'store:detail_view' product.id %}">{{ product.name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <h2>Welcome!</h2>
+        <h2>All products</h2>
+        <ul>
+            {% for product in all_products %}
+                <li>
+                    <a href="{% url 'store:detail_view' product.id %}">{{ product.name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
     <!-- login/logout buttons -->
     <nav>
         {% if request.user.is_authenticated %}
-        Currently logged in as <b>'{{ user.username }}'. </b>
-        
         <form action="{% url 'logout' %}" method="post">
+            Currently logged in as <b>'{{ user.username }}'. </b>
             {% csrf_token %}
             <button type="submit">Logout</button>
         </form>
-
+        <!-- redirect links -->
+         <br>
+        <a href="{% url 'store:add_product_view' %}">{{ 'Make a new product listing' }}</a>
         {% else %}
             Currently logged out. <a href="{% url 'login' %}">Login?</a>
         {% endif %}
