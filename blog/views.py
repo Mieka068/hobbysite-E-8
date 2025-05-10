@@ -1,12 +1,11 @@
 from django.shortcuts import redirect
-from django.utils import timezone
 from django.urls import reverse_lazy
 
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import ArticleCategory, Article, Comment
+from .models import ArticleCategory, Article
 from .forms import ArticleForm, CommentForm
 
 
