@@ -48,7 +48,7 @@
             <center>
                 <td><a href="{% url 'store:buy_product_view' product.id %}">{{ 'Buy product?' }}</a></td>
             </center>
-        {% else %}
+        {% elif  product.owner.user != user %}
             <center>
                 <td><a href="{% url 'store:detail_view' product.id %}" style="color: red;">{{ 'Product not available.' }}</a></td>
             </center>

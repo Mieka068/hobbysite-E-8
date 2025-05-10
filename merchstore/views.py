@@ -96,6 +96,7 @@ def cart_view(request):
         print("Purchased Products:", purchased_products)  # Debugging Output
         ctx = {
             'bought_products': purchased_products,
+            'cart_size': purchased_products.count(),
         }
     else:
         ctx = {
