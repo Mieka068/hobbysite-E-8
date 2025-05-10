@@ -89,14 +89,14 @@ def cart_view(request):
             user_profile = None
          
         # Get all products the user has purchased
-        purchased_products = Product.objects.filter(
-            id__in=Transaction.objects.filter(buyer=user_profile).values_list('product', flat=True)
-        )
+        purchases = Transaction.objects.filter(
+            buyer=user_profile,
+        ).select_related('product').order_by('product__name')
         
-        print("Purchased Products:", purchased_products)  # Debugging Output
+        print("Purchased Products:", purchases)  # Debugging Output
         ctx = {
-            'bought_products': purchased_products,
-            'cart_size': purchased_products.count(),
+            'purchases': purchases,
+            'cart_size': purchases.count(),
         }
     else:
         ctx = {
