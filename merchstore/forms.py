@@ -19,17 +19,16 @@ class AddProductForm(forms.ModelForm):
 class TransactionForm(forms.ModelForm):
     class Meta:
         model = Transaction
-        fields = ['status', 'buyer', 
-                  'product', 'amount', 
-                  'status'
-                  ]
+        fields = ['buyer', 'product', 'amount']
         
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         product = kwargs.pop('product', None)
         super(TransactionForm, self).__init__(*args, **kwargs)
         self.fields['buyer'].initial = user
+        self.fields['product'].initial = product
         self.fields['buyer'].disabled = True
+        self.fields['product'].disabled = True
         self.fields['amount'].widget.attrs['max'] = product.stock
         self.fields['amount'].widget.attrs['min'] = 1
         self.fields['amount'].initial = 1  # Default value
