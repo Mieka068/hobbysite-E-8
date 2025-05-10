@@ -97,4 +97,6 @@ class Transaction(models.Model):
 
     created_on = models.DateTimeField(auto_now_add=True)
 
-
+    def __str__(self):
+        print("From models.py: ", self.product.name)
+        return f"{self.product.name}"
