@@ -7,33 +7,18 @@
         <h1>Merchandise Store</h1>
     </header>
     {% if user.is_authenticated %}
-        <h2>🎉 Welcome back, {{ user.username }}!</h2>
-        <a href="{% url 'store:cart_view' %}">{{ 'View Cart' }}</a>        <h2>🏷️ Your listings</h2>
+        <h2>🛒 Your Purchases</h2>
         <ul>
-            {% for product in owned_products %}
+            {% for product in bought_products %}
                 <li>
                     <a href="{% url 'store:detail_view' product.id %}">{{ product.name }}</a>
                 </li>
             {% endfor %}
         </ul>
-        <h2>🛒 Other products</h2>
-        <ul>
-            {% for product in other_products %}
-                <li>
-                    <a href="{% url 'store:detail_view' product.id %}">{{ product.name }}</a>
-                </li>
-            {% endfor %}
-        </ul>
+
     {% else %}
-        <h2>Welcome!</h2>
-        <h2>All products</h2>
-        <ul>
-            {% for product in all_products %}
-                <li>
-                    <a href="{% url 'store:detail_view' product.id %}">{{ product.name }}</a>
-                </li>
-            {% endfor %}
-        </ul>
+        <h2>Uh-oh... seems you're logged out.</h2>
+            <a href="{% url 'login' %}">Login?</a>
     {% endif %}
 
     <!-- login/logout buttons -->
@@ -46,10 +31,14 @@
         </form>
         <!-- redirect links -->
          <br>
-        <a href="{% url 'store:add_product_view' %}">{{ 'Sell a Product' }}</a>
         {% else %}
             Currently logged out. <a href="{% url 'login' %}">Login?</a>
         {% endif %}
     </nav> 
+
+    <table align="center">
+            <td><a href="{% url 'store:list_view' %}"><p>{{ 'Back to All Products' }}</a></td>
+        </tr>
+    </table>
 
 {% endblock %}

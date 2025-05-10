@@ -1,5 +1,5 @@
 from django.http import HttpResponseForbidden
-from .models import Profile
+from .models import Profile, Transaction
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 
@@ -46,7 +46,6 @@ def add_product_view(request):
 
 @login_required
 def buy_product_view(request, product_id):
-
     try:
         product_obj = Product.objects.get(id=product_id)
     
@@ -79,3 +78,27 @@ def buy_product_view(request, product_id):
 
     return render(request, 'buy_product.html', {
         'form': form, 'product': product_obj})
+
+@login_required
+def cart_view(request):
+    user = request.user
+    if user.is_authenticated:
+        try:
+            user_profile = Profile.objects.get(user=user)
+        except Profile.DoesNotExist:
+            user_profile = None
+         
+        # Get all products the user has purchased
+        purchased_products = Product.objects.filter(
+            id__in=Transaction.objects.filter(buyer=user_profile).values_list('product', flat=True)
+        )
+        
+        print("Purchased Products:", purchased_products)  # Debugging Output
+        ctx = {
+            'bought_products': purchased_products,
+        }
+    else:
+        ctx = {
+            'all_products': Product.objects.all()
+        }
+    return render(request, 'cart.html', ctx)
