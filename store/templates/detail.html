@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} - Merchandise Store{% endblock %}
+
+{% block content %}
+    <h2>{{ product.name }}</h2>
+    
+    <p><b>Category:</b> <i>{{ product.product_type }}</i></p>
+    <p><b>Description:</b> <i>{{ product.description }}</i></p>
+    <p><b>Price:</b> ${{ product.price }}</p>
+
+    <div class="back-button-container">
+        <a href="{% url 'store:list_view' %}" class="back-button">Back to Product List</a>
+    </div>
+{% endblock %}
+
