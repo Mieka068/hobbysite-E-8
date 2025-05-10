@@ -43,6 +43,13 @@
         {% endif %}
 
         <!-- redirect links -->
+         <br>
+         {% if product.owner.user != user %}
+            <center>
+                <td><a href="{% url 'store:buy_product_view' product.id %}">{{ 'Buy product?' }}</a></td>
+            </center>
+        {% endif %}
+
         <table align="center">
             <tr>
                 <td><a href="{% url 'store:add_product_view' %}">{{ ' Make a new product listing' }}</a></td>

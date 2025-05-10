@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 
 from .models import ProductType, Product
-from .forms import AddProductForm
+from .forms import AddProductForm, TransactionForm
 
 def list_view(request):
     user = request.user
@@ -27,18 +27,36 @@ def list_view(request):
 
 def detail_view(request, product_id):
     product = get_object_or_404(Product, id=product_id)
+    print("Product Owner:", product.owner)
+    print("Current User:", request.user)
+    print("Comparison:", product.owner == request.user)
     return render(request, 'detail.html', {'product': product})
 
 @login_required
 def add_product_view(request):
     if request.method == 'POST':
-        form = AddProductForm(request.POST)
+        form = AddProductForm(request.POST, user=request.user)
         if form.is_valid():
             product = form.save(commit=False)
             product.owner = request.user.profile
             product.save()
             return redirect('store:list_view')
     else:
-        form = AddProductForm()
+        form = AddProductForm(user=request.user)
 
     return render(request, 'add_product.html', {'form': form})
+
+@login_required
+def buy_product_view(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+
+    if request.method == 'POST':
+        form = TransactionForm(request.POST, user=request.user, product=product)
+        if form.is_valid():
+            product.stock -= 1
+            product.save()
+            return redirect('store:list_view')
+    else:
+        form = TransactionForm(user=request.user, product=product)
+    return render(request, 'buy_product.html', {
+        'form': form, 'product': product})
