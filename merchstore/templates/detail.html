@@ -44,17 +44,21 @@
 
         <!-- redirect links -->
          <br>
-         {% if product.owner.user != user %}
+         {% if product.owner.user != user and product.stock > 0 %}
             <center>
                 <td><a href="{% url 'store:buy_product_view' product.id %}">{{ 'Buy product?' }}</a></td>
+            </center>
+        {% else %}
+            <center>
+                <td><a href="{% url 'store:detail_view' product.id %}" style="color: red;">{{ 'Product not available.' }}</a></td>
             </center>
         {% endif %}
 
         <table align="center">
             <tr>
-                <td><a href="{% url 'store:add_product_view' %}">{{ ' Make a new product listing' }}</a></td>
+                <td><a href="{% url 'store:add_product_view' %}">{{ ' Sell a Product' }}</a></td>
                 <td>  | </td>
-                <td><a href="{% url 'store:list_view' %}"><p>{{ 'Back to product list' }}</a></td>
+                <td><a href="{% url 'store:list_view' %}"><p>{{ 'Back to All Products' }}</a></td>
             </tr>
         </table>
         
