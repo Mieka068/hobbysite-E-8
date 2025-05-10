@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'store',
     'forum',
     'user_management',
+    'accounts',
 ]
 
 MIDDLEWARE = [
