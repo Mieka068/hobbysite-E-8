@@ -1,5 +1,5 @@
 from django import forms
-from .models import Product, ProductType, Transaction
+from .models import Product, ProductType, Transaction, Profile
 
 class AddProductForm(forms.ModelForm):
     class Meta:
@@ -13,7 +13,7 @@ class AddProductForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         super(AddProductForm, self).__init__(*args, **kwargs)
-        self.fields['owner'].initial = user
+        self.fields['owner'].initial = user.profile
         self.fields['owner'].disabled = True
 
 class TransactionForm(forms.ModelForm):
@@ -23,10 +23,20 @@ class TransactionForm(forms.ModelForm):
         
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
+        profile = Profile.objects.get(user=user)
         product = kwargs.pop('product', None)
         super(TransactionForm, self).__init__(*args, **kwargs)
-        self.fields['buyer'].initial = user
-        self.fields['product'].initial = product
+
+        self.fields['buyer'] = forms.ModelChoiceField(
+            queryset=Profile.objects.filter(id=profile.id),
+            initial=profile,
+        )
+
+        self.fields['product'] = forms.ModelChoiceField(
+            queryset=Product.objects.filter(id=product.id),
+            initial=product,
+        )
+        
         self.fields['buyer'].disabled = True
         self.fields['product'].disabled = True
         self.fields['amount'].widget.attrs['max'] = product.stock
