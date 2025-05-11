@@ -115,6 +115,9 @@ def edit_product_view(request, product_id):
     except Profile.DoesNotExist:
         user_profile = None
 
+    if selected_product.owner != request.user.profile:
+        return HttpResponseForbidden("This is not your product. Cannot edit.")
+    
     if request.method == 'POST':
         form = EditProductForm(request.POST, user=user_profile, instance=selected_product)
         if form.is_valid():
