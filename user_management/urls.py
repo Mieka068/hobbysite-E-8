@@ -14,4 +14,5 @@ urlpatterns = [
     
     #keep in Profile App
     path('profile/', views.profile_update, name='profile'),
+    path('dashboard/', views.dashboard_view, name='dashboard'), 
 ]
