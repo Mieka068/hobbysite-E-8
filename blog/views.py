@@ -49,7 +49,7 @@ class ArticleDetailView(DetailView):
         context['comments'] = article.comments.all().order_by('-created_on')
         context['comment_form'] = CommentForm()
         
-        context['view_type'] = 'create'
+        context['view_type'] = 'detail'
 
         return context
 
