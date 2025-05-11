@@ -44,11 +44,12 @@ class ArticleDetailView(DetailView):
 
         context['article_author'] = article.author
         context['other_articles'] = Article.objects.filter(
-            author=article.author).exclude(id=article.id)[:2]  # Get at least 2 other articles
+            author=article.author).exclude(id=article.id)[:2]
 
         context['comments'] = article.comments.all().order_by('-created_on')
-
         context['comment_form'] = CommentForm()
+        
+        context['view_type'] = 'create'
 
         return context
 
@@ -70,9 +71,15 @@ class ArticleDetailView(DetailView):
 
 class ArticleCreateView(LoginRequiredMixin, CreateView):
     model = Article
-    fields = '__all__'
     form_class = ArticleForm
+    template_name = 'blog/article_detail.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        context['view_type'] = 'create'
+
+        return context
 
     def form_valid(self, form):
         form.instance.author = self.request.user.profile
@@ -81,8 +88,13 @@ class ArticleCreateView(LoginRequiredMixin, CreateView):
 
 class ArticleUpdateView(LoginRequiredMixin, UpdateView):
     model = Article
-    fields = '__all__'
-    template_name = 'artice_detail.html'
+    template_name = 'blog/article_detail.html'
     form_class = ArticleForm
     success_url = reverse_lazy('blog:article_list')
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        context['view_type'] = 'update'
+
+        return context
