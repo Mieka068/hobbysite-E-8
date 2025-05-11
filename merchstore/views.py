@@ -69,7 +69,7 @@ def buy_product_view(request, product_id):
                 transaction.save()
                 product_obj.stock -= amount
                 product_obj.save()
-                return redirect('store:list_view')
+                return redirect('store:cart_view')
             else:
                 form.add_error('amount', 'You have selected quantity higher than the available stock.')
     
