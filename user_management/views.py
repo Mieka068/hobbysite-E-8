@@ -15,7 +15,7 @@ def register_view(request):
             # Create Profile when new User is created
             Profile.objects.create(user=user, display_name=user.username, email=user.email)
             login(request, user)
-            return redirect('user_management:homepage')  # redirect to homepage
+            return redirect('user_management:homepage')
     else:
         form = UserCreationForm()
     return render(request, 'registration/register.html', {'form': form})
@@ -36,7 +36,7 @@ def login_view(request):
 @login_required
 def logout_view(request):
     logout(request)
-    return redirect('user_management:login')
+    return redirect('accounts:login')
 
 # Profile Update View
 @login_required
