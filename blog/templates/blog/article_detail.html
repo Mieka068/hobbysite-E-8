@@ -40,18 +40,25 @@
         <br>
         {% for comment in comments %}
             <div class="comment">   
-                <h3>{{ comment.author }}</h3>
+                <span class="comment-author">{{ comment.author }}</span> 
+                <span class="comment-date">| {{ comment.created_on }}</span>
                 <p>{{ comment.entry }}</p>
             </div>
         {% empty %}
             <p>Nothing to see here.</p>
         {% endfor %}
-        {% else %}
-            <form method="post">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <input type="submit" value="Submit">
-            </form> 
-        {% endif %}
+    {% elif view_type == 'create' %}
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Publish">
+        </form> 
+    {% else %}
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Update">
+        </form> 
+    {% endif %}
 </ul>
 {% endblock %}
