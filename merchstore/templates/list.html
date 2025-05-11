@@ -8,7 +8,8 @@
     </header>
     {% if user.is_authenticated %}
         <h2>🎉 Welcome back, {{ user.username }}!</h2>
-        <a href="{% url 'store:cart_view' %}">{{ 'View Cart' }}</a>        <h2>🏷️ Your listings</h2>
+        <a href="{% url 'store:cart_view' %}">{{ 'View Cart' }}</a>        
+        <h2>🏷️ Your listings</h2>
         <ul>
             {% for product in owned_products %}
                 <li>
