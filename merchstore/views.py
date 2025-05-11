@@ -91,6 +91,8 @@ def cart_view(request):
         # Get all products the user has purchased
         purchases = Transaction.objects.filter(
             buyer=user_profile,
+        ).exclude(
+            product__isnull=True
         ).select_related('product').order_by('product__name')
         
         print("Purchased Products:", purchases)  # Debugging Output
