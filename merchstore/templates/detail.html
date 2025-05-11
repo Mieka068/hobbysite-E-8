@@ -54,6 +54,12 @@
             </center>
         {% endif %}
 
+        {% if product.owner.user == user %}
+            <center>
+                <td><a href="{% url 'store:edit_product_view' product.id %}">{{ 'Edit Product' }}</a></td>
+            </center>
+        {% endif %}
+
         <table align="center">
             <tr>
                 <td><a href="{% url 'store:add_product_view' %}">{{ ' Sell a Product' }}</a></td>
