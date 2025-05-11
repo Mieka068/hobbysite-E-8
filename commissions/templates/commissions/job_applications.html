@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Applications for {{ job.role }}{% endblock %}
+
+{% block content %}
+    <h1>Applications for {{ job.role }}</h1>
+    <p><a href="{% url 'commissions:detail' job.commission.id %}">← Back to Commission</a></p>
+    <hr>
+
+    {% if applications %}
+        {% for app in applications %}
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <p>{{ app.applicant.display_name }}</p>
+                <div>
+                    {% if app.status == "Pending" %}
+                        <span style="background-color: grey; color: white; padding: 5px 10px; border-radius: 5px;">Pending</span>
+                        <a href="{% url 'commissions:accept_application' app.id %}">Accept</a> |
+                        <a href="{% url 'commissions:reject_application' app.id %}">Reject</a>
+                    {% elif app.status == "Accepted" %}
+                        <span style="background-color: green; color: white; padding: 5px 10px; border-radius: 5px;">Accepted</span>
+                    {% else %}
+                        <span style="background-color: red; color: white; padding: 5px 10px; border-radius: 5px;">Rejected</span>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No applications yet.</p>
+    {% endif %}
+{% endblock %}
