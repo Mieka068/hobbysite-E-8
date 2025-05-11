@@ -3,103 +3,91 @@
 {% block title %}{{ commission.title }}{% endblock %}
 
 {% block content %}
-    <h1>{{ commission.title }}</h1>
-    <p><strong>Description:</strong> {{ commission.description }}</p>
-    <p><strong>Status:</strong> {{ commission.status }}</p>
-    <p><strong>Created On:</strong> {{ commission.created_on }}</p>
-    <p><strong>Last Updated:</strong> {{ commission.updated_on }}</p>
+<h1>{{ commission.title }}</h1>
+<p><strong>Description:</strong> {{ commission.description }}</p>
+<p><strong>Status:</strong> {{ commission.status }}</p>
+<p><strong>Created On:</strong> {{ commission.created_on }}</p>
+<p><strong>Last Updated:</strong> {{ commission.updated_on }}</p>
 
-    {% if is_owner %}
-        <p><a href="{% url 'commissions:update' commission.id %}">Edit Commission</a></p>
-    {% endif %}
+{% if is_owner %}
+    <p><a href="{% url 'commissions:update' commission.id %}">Edit Commission</a></p>
+{% endif %}
 
-    <hr>
+<hr>
 
-    <h2>Jobs for this Commission</h2>
-    <!-- <p><strong>Total Manpower Required:</strong> {{ total_manpower_required }}</p>
-    <p><strong>Open Manpower:</strong> {{ open_manpower }}</p> -->
+<h2>Jobs for this Commission</h2>
 
-    {% if jobs %}
-        {% for job in jobs %}
-            <div class="commission-box">
-                <p><strong>Role:</strong> {{ job.role }}</p>
-                <p><strong>Manpower Required:</strong> {{ job.manpower_required }}</p>
-                <p><strong>Status:</strong> {{ job.status }}</p>
-                <p><strong>Accepted Applicants:</strong> {{ job.accepted_count }}</p>
-                <p><strong>Open Manpower:</strong> {{ job.open_slots }}</p>
+{% if jobs %}
+    {% for job in jobs %}
+        <div class="commission-box">
+            <p><strong>Role:</strong> {{ job.role }}</p>
+            <p><strong>Manpower Required:</strong> {{ job.manpower_required }}</p>
+            <p><strong>Status:</strong> {{ job.status }}</p>
+            <p><strong>Accepted Applicants:</strong> {{ job.accepted_count }}</p>
+            <p><strong>Open Manpower:</strong> {{ job.open_slots }}</p>
 
-                <!-- Applications List -->
+            <!-- ✅ If user is owner → show "View Applications" button -->
+            {% if is_owner %}
+                <div style="display: flex; justify-content: flex-end;">
+                    <a href="{% url 'commissions:job_applications' job.id %}" 
+                       style="background-color: #3498db; color: white; padding: 5px 10px; border-radius: 5px; text-decoration: none;">
+                        View Applications
+                    </a>
+                </div>
+
+            {% elif user.is_authenticated %}
+                <!-- ✅ Show user their application status -->
                 {% for app in job.applications.all %}
-                    {% if is_owner %}
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <p>{{ app.applicant.display_name }}</p>
-                            <div>
-                                {% if app.status == "Pending" %}
-                                    <span style="background-color: grey; color: white; padding: 5px 10px; border-radius: 5px;">Pending</span>
-                                    <a href="{% url 'commissions:accept_application' app.id %}">Accept</a> |
-                                    <a href="{% url 'commissions:reject_application' app.id %}">Reject</a>
-                                {% elif app.status == "Accepted" %}
-                                    <span style="background-color: green; color: white; padding: 5px 10px; border-radius: 5px;">Accepted</span>
-                                {% else %}
-                                    <span style="background-color: red; color: white; padding: 5px 10px; border-radius: 5px;">Rejected</span>
-                                {% endif %}
-                            </div>
-                        </div>
-                    {% elif user.is_authenticated and app.applicant.user == user %}
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <p><strong>Application Status:</strong></p>
+                    {% if app.applicant.user == user %}
+                        <div style="display: flex; justify-content: flex-end; flex-direction: column; align-items: flex-end; margin-top: 10px;">
+                            <p style="margin: 0;"><strong>Application Status:</strong></p>
                             {% if app.status == "Pending" %}
-                                <span style="background-color: grey; color: white; padding: 5px 10px; border-radius: 5px;">Pending</span>
+                                <span style="background-color: grey; color: white; padding: 5px 10px; border-radius: 5px; margin-top: 5px;">Pending</span>
                             {% elif app.status == "Accepted" %}
-                                <span style="background-color: green; color: white; padding: 5px 10px; border-radius: 5px;">Accepted</span>
+                                <span style="background-color: green; color: white; padding: 5px 10px; border-radius: 5px; margin-top: 5px;">Accepted</span>
                             {% else %}
-                                <span style="background-color: red; color: white; padding: 5px 10px; border-radius: 5px;">Rejected</span>
+                                <span style="background-color: red; color: white; padding: 5px 10px; border-radius: 5px; margin-top: 5px;">Rejected</span>
                             {% endif %}
                         </div>
                     {% endif %}
                 {% endfor %}
 
-                {% if user.is_authenticated %}
-                    {% if commission.poster == user %}
-                        <!-- Owner should not see apply button -->
-                        <p><em>You are the owner of this commission.</em></p>
+                <!-- ✅ Apply to Job / Applications Full logic -->
+                {% with job_id=job.id|stringformat:"s" %}
+                    {% if job_id in user_applied_jobs %}
+                        <!-- ✅ User has applied, no Apply button -->
+                    {% elif job.accepted_count < job.manpower_required %}
+                        <!-- Apply to Job -->
+                        <div style="display: flex; justify-content: flex-end;">
+                            <form action="{% url 'commissions:apply_to_job' job.id %}" method="post" style="margin: 0;">
+                                {% csrf_token %}
+                                <button type="submit" style="background-color: #3498db; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">
+                                    Apply to Job
+                                </button>
+                            </form>
+                        </div>
                     {% else %}
-                        {% with job_id=job.id|stringformat:"s" %}
-                            {% if job_id in user_applied_jobs %}
-                                <!-- ✅ User has applied, no Apply button -->
-                            {% elif job.accepted_count < job.manpower_required %}
-                                <!-- Apply to Job -->
-                                <div style="display: flex; justify-content: flex-end;">
-                                    <form action="{% url 'commissions:apply_to_job' job.id %}" method="post" style="margin: 0;">
-                                        {% csrf_token %}
-                                        <button type="submit" style="background-color: #3498db; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">
-                                            Apply to Job
-                                        </button>
-                                    </form>
-                                </div>
-                            {% else %}
-                                <!-- Applications Full -->
-                                <div style="display: flex; justify-content: flex-end;">
-                                    <button disabled style="background-color: grey; color: white; padding: 5px 10px; border-radius: 5px; border: none;">
-                                        Applications Full
-                                    </button>
-                                </div>
-                            {% endif %}
-                        {% endwith %}
+                        <!-- Applications Full -->
+                        <div style="display: flex; justify-content: flex-end;">
+                            <button disabled style="background-color: grey; color: white; padding: 5px 10px; border-radius: 5px; border: none;">
+                                Applications Full
+                            </button>
+                        </div>
                     {% endif %}
-                {% else %}
-                    <p><a href="{% url 'login' %}">Login to apply</a></p>
-                {% endif %}
+                {% endwith %}
 
+            {% else %}
+                <!-- Not logged in -->
+                <p><a href="{% url 'login' %}">Login to apply</a></p>
+            {% endif %}
 
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No jobs posted for this commission yet.</p>
+{% endif %}
 
-            </div>
-        {% endfor %}
-    {% else %}
-        <p>No jobs posted for this commission yet.</p>
-    {% endif %}
-
-    <div class="back-button-container">
-        <a href="{% url 'commissions:list' %}" class="back-button">← Back to List</a>
-    </div>
+<div class="back-button-container">
+    <a href="{% url 'commissions:list' %}" class="back-button">← Back to List</a>
+</div>
 {% endblock %}
