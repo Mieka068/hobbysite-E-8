@@ -7,31 +7,31 @@
         <h1>Merchandise Store</h1>
     </header>
     {% if user.is_authenticated %}
-        <h2>🛒 Your Purchases</h2>
-        <h4>Orders you have placed on other users' products can be found here.</h4>
-        {% for purchase in purchases %}
+        <h2>🛒 Your Transactions</h2>
+        <h4>Orders on your products placed by your customers can be found here.</h4>
+        {% for transaction in transactions %}
             <ul>
                 <li>
-                    <a href="{% url 'store:detail_view' purchase.product.id %}">
-                        {{ purchase.product.name }}
+                    <a href="{% url 'store:detail_view' transaction.product.id %}">
+                        Order #{{ forloop.counter }}: {{ transaction.product.name }}
                     </a>
                 </li>
                 <ul>
-                    <li> Seller:  <i>{{ purchase.product.owner}}</i></li>
-                    <li> Ordered quantity:  <i>{{ purchase.amount }}</i></li>
-                    <li> Ordered on:  <i>{{ purchase.created_on }}</i></li>
-                    <li> Transaction status:  <i>{{ purchase.status }}</i></li>
+                    <li> Buyer:  <i>{{ transaction.buyer }}</i></li>
+                    <li> Ordered quantity:  <i>{{ transaction.amount }}</i></li>
+                    <li> Ordered on:  <i>{{ transaction.created_on }}</i></li>
+                    <li> Transaction status:  <i>{{ transaction.status }}</i></li>
                 </ul>
             </ul>
-            {% endfor %}
-        {% if cart_size == 0 %}
-            <h4> Your cart is empty.</h4>
-        {% endif %}
-
+        {% endfor %}
     {% else %}
         <h2>Uh-oh... seems you're logged out.</h2>
             <a href="{% url 'login' %}">Login?</a>
     {% endif %}
+
+    {% if transactions_made == 0 %}
+    <h4> Seems you have no products sold yet. Come back later.</h4>
+{% endif %}
 
     <!-- login/logout buttons -->
     <nav>
@@ -49,7 +49,7 @@
     </nav> 
 
     <table align="center">
-            <td><a href="{% url 'store:list_view' %}"><p>{{ 'Back to All Products' }}</a></td>
+            <td><a href="{% url 'store:list_view' %}">{{ 'Back to All Products' }}</a></td>
         </tr>
     </table>
 

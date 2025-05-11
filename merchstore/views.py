@@ -128,3 +128,28 @@ def edit_product_view(request, product_id):
         'user': user_profile,
         'product': selected_product
     })
+
+def transactions_view(request):
+    user = request.user
+    if user.is_authenticated:
+        try:
+            user_profile = Profile.objects.get(user=user)
+        except Profile.DoesNotExist:
+            user_profile = None
+         
+        transactions = Transaction.objects.exclude(
+            buyer=user_profile
+        ).exclude(
+            product__isnull=True
+        ).select_related('product').order_by('product__name')
+
+        print("Products sold:", transactions)
+        ctx = {
+            'transactions': transactions,
+            'transactions_made': transactions.count(),
+        }
+    else:
+        ctx = {
+            'all_products': Product.objects.all()
+        }
+    return render(request, 'transactions.html', ctx)
