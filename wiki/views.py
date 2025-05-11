@@ -15,10 +15,12 @@ class ArticleListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
+
         if user.is_authenticated:
             profile = get_object_or_404(Profile, user=user)
             context['user_articles'] = Article.objects.filter(author=profile)
             context['all_articles'] = Article.objects.exclude(author=profile)
+            
         return context
 
 
@@ -34,23 +36,29 @@ class ArticleDetailView(DetailView):
         article = self.get_object()
         user = self.request.user
         profile = get_object_or_404(Profile, user=user)
+
         context['profile'] = profile
         context['other_articles'] = Article.objects.filter(category=article.category).exclude(id=article.id)
         context['comment_form'] = CommentForm
+
         return context
     
     def post(self, request, *args, **kwargs):
         article = self.get_object()
         user = self.request.user
+
         if user.is_authenticated:
             profile = get_object_or_404(Profile, user=user)
             comment_form = CommentForm(request.POST)
+
             if comment_form.is_valid():
                 comment = comment_form.save(commit=False)
                 comment.article = article
                 comment.author = profile
                 comment.save()
+
                 return redirect('wiki:article_detail', pk=article.pk)
+            
         return self.get(request, *args, **kwargs)
 
 
