@@ -4,6 +4,7 @@
 
 {% block content %}
     <h2>Edit product listing</h2>
+    <h4><i>You are currently editing the listing for "{{ product.name }}"</i></h4>
 
     <form method="POST">
         {% csrf_token %}

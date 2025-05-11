@@ -53,7 +53,8 @@ class Product(models.Model):
     def save(self, *args, **kwargs):
         if self.stock == 0:
             self.status = 'Out of stock'
-
+        elif self.status != 'On sale' and self.stock > 0:
+            self.status = 'Available'
         super(Product, self).save(*args, **kwargs)
 
     def __str__(self):

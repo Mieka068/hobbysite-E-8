@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 
 from .models import ProductType, Product
-from .forms import AddProductForm, TransactionForm
+from .forms import AddProductForm, TransactionForm, EditProductForm
 
 def list_view(request):
     user = request.user
@@ -103,3 +103,28 @@ def cart_view(request):
             'all_products': Product.objects.all()
         }
     return render(request, 'cart.html', ctx)
+
+@login_required
+def edit_product_view(request, product_id):
+    selected_product = get_object_or_404(Product, id=product_id)
+
+    try:
+        user_profile = Profile.objects.get(user=request.user)
+    except Profile.DoesNotExist:
+        user_profile = None
+
+    if request.method == 'POST':
+        form = EditProductForm(request.POST, user=user_profile, instance=selected_product)
+        if form.is_valid():
+            product = form.save(commit=False)
+            product.owner = user_profile
+            product.save()
+            return redirect('store:list_view')
+    else:
+        form = EditProductForm(user=user_profile, instance=selected_product)
+
+    return render(request, 'edit_product.html', {
+        'form': form,
+        'user': user_profile,
+        'product': selected_product
+    })
