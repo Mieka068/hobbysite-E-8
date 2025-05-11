@@ -25,7 +25,8 @@ class ArticleAdmin(admin.ModelAdmin):
             'fields': [
                 'title',
                 'entry',
-                'category'
+                'category',
+                'header_img'
             ]
         }),
     ]
