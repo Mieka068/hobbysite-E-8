@@ -6,6 +6,7 @@ from django.urls import reverse
 from .forms import ProfileForm
 from .models import Profile
 from commissions.models import Commission, JobApplication
+from wiki.models import Article
 
 # Registration View - transfer to Accounts app
 def register_view(request):
@@ -74,7 +75,11 @@ def dashboard_view(request):
         jobs__applications__in=accepted_apps
     ).distinct()
 
+    # Wiki articles created by this user
+    wiki_articles = Article.objects.filter(author=user.profile)
+
     return render(request, 'user_management/dashboard.html', {
         'commissions_created': commissions_created,
         'commissions_joined': commissions_joined,
+        'wiki_articles': wiki_articles,
     })
