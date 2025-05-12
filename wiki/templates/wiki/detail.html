@@ -4,7 +4,9 @@
 {% block content %}
     <p><a href="{% url 'wiki:article_list' %}">Return to list of articles</a></p>
     <h1>{{ article.title }}</h1>
-    <img src="{{ article.header_image.url }}"><br/>
+    {% if article.header_image %}
+        <img src="{{ article.header_image.url }}"><br/>
+    {% endif %}
     Created on: {{ article.created_on }} /
     Last updated on: {{ article.updated_on }}
     {% if profile == article.author %}
