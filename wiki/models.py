@@ -5,7 +5,7 @@ from user_management.models import Profile
 
 class ArticleCategory(models.Model):
     name = models.CharField(max_length=255)
-    description = models.TextField
+    description = models.TextField(null=False)
 
     def __str__(self):
         return self.name
@@ -24,11 +24,11 @@ class Article(models.Model):
     category = models.ForeignKey(
         ArticleCategory,
         on_delete=models.SET_NULL,
-        null='TRUE',
+        null=True,
         related_name='articles',
     )
-    entry = models.TextField(null='TRUE')
-    header_image = models.ImageField(upload_to='images/', null='TRUE')
+    entry = models.TextField(null=False)
+    header_image = models.ImageField(upload_to='images/', null=False)
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
 
@@ -53,7 +53,7 @@ class Comment(models.Model):
         on_delete=models.CASCADE,
         related_name='comments'
     )
-    entry = models.TextField(null='TRUE')
+    entry = models.TextField(null=False)
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
 
