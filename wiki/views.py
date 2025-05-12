@@ -12,14 +12,29 @@ class ArticleListView(ListView):
     template_name = 'wiki/list.html'
     context_object_name = 'categories'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    def get_queryset(self):
         user = self.request.user
+        all_articles = Article.objects.all()
 
         if user.is_authenticated:
             profile = get_object_or_404(Profile, user=user)
-            context['user_articles'] = Article.objects.filter(author=profile)
-            context['all_articles'] = Article.objects.exclude(author=profile)
+            user_articles = Article.objects.filter(author=profile)
+            all_articles = Article.objects.exclude(author=profile)
+
+        return all_articles, user_articles
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        all_articles, user_articles = self.get_queryset()
+        category_groups = {}
+
+        for category in ArticleCategory.objects.all():
+            category_groups[category] = all_articles.filter(category=category)
+
+        context['category_groups'] = category_groups
+        context['user_articles'] = user_articles
             
         return context
 

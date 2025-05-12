@@ -2,7 +2,7 @@
 
 {% block title %}Wiki{% endblock %}
 {% block content %}
-    <h1>Categories</h1>
+    <h1>Wiki</h1>
     {% if user.is_authenticated %}
         <h3>Your Articles</h3>
             <ul>
@@ -14,11 +14,11 @@
             </ul>
         <p><a href="{% url 'wiki:article_create' %}">Create New Article</a></p>
     {% endif %}
-    {% for category in categories %}
+    {% for category, articles in category_groups.items %}
         <h3>{{ category.name }}</h3>
         {{ category.description }}
         <ul>
-            {% for article in all_articles %}
+            {% for article in articles %}
                 <li><a href='{{ article.get_absolute_url }}'>{{ article.title }}</a></li>
             {% empty %}
                 <p>There are currently no articles under this category.</p>
