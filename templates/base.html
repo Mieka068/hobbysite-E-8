@@ -233,11 +233,11 @@
                     <div class="dropdown-content">
                         <a href="{% url 'user_management:profile' %}">Edit Profile</a>
                         <a href="{% url 'user_management:dashboard' %}">Dashboard</a>
-                        <a href="{% url 'user_management:logout' %}">Logout</a>
+                        <a href="{% url 'accounts:logout' %}">Logout</a>
                     </div>
                 </div>
             {% else %}
-                <a href="{% url 'user_management:login' %}">Login</a>
+                <a href="{% url 'accounts:login' %}">Login</a>
             {% endif %}
         </div>
     </div>
