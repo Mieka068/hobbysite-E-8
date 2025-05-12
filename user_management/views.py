@@ -28,6 +28,7 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
+            next_url = request.GET.get('next') or 'home' 
             return redirect('user_management:homepage')  # redirect to homepage
     else:
         form = AuthenticationForm()
@@ -56,7 +57,9 @@ def profile_update(request):
 
 # Homepage View - Keep in Profile app
 def homepage(request):
-    return render(request, 'user_management/homepage.html')
+    return render(request, 'user_management/homepage.html', {
+        "active_page": "home",
+    })
 
 @login_required
 def dashboard_view(request):
