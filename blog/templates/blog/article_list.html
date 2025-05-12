@@ -2,21 +2,38 @@
 {% load static %}
 
 {% block title %}Article Categories{% endblock %}
+
 {% block content %}
-<ul>
-        <h2>My Articles</h2>
-        {% for article in my_articles%}
-            <li><a href="{{ article.get_absolute_url }}">{{ article.title }}</a></li>
-        {% endfor %}
-        <p><a href="{% url 'blog:article_create' %}">+ Create New Article</a></p>
-        <h2>All Articles</h2>
+        <h1>My Articles</h1>
+
+        <div class="commissions-list">
+            {% for article in my_articles %}
+                <div class="commission-box">
+                    <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
+                </div>
+            {% empty %}
+                <p>You haven't written any articles yet.</p>
+            {% endfor %}
+        </div>
+
+        <div class="back-button-container">
+            <a href="{% url 'blog:article_create' %}" class="back-button">+ Create New Article</a>
+        </div>
+
+        <h1 style="margin-top: 40px;">All Articles</h1>
+
         {% for category, articles in category_groups.items %}
-            <h3>{{ category.name }}</h3>
-            <ul>
+            <h2 style="color: #2c3e50; margin-top: 20px;">{{ category.name }}</h2>
+            <div class="commissions-list">
                 {% for article in articles %}
-                <li><a href="{{ article.get_absolute_url }}">{{ article.title }}</a></li>
+                    <div class="commission-box">
+                        <a href="{{ article.get_absolute_url }}">{{ article.title }} by {{ article.author }}</a>
+                    </div>
+                {% empty %}
+                    <p>No articles in this category.</p>
                 {% endfor %}
-            </ul>
+            </div>
+        {% empty %}
+            <p>No categories found.</p>
         {% endfor %}
-</ul>
 {% endblock %}
