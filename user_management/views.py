@@ -7,6 +7,7 @@ from .forms import ProfileForm
 from .models import Profile
 from commissions.models import Commission, JobApplication
 from wiki.models import Article
+from blog.models import Article as BlogArticle
 
 # Registration View - transfer to Accounts app
 def register_view(request):
@@ -78,8 +79,12 @@ def dashboard_view(request):
     # Wiki articles created by this user
     wiki_articles = Article.objects.filter(author=user.profile)
 
+    # Blog articles created by this user
+    blog_articles = BlogArticle.objects.filter(author=user.profile)
+
     return render(request, 'user_management/dashboard.html', {
         'commissions_created': commissions_created,
         'commissions_joined': commissions_joined,
         'wiki_articles': wiki_articles,
+        'blog_articles': blog_articles,
     })
