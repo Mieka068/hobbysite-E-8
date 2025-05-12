@@ -2,15 +2,102 @@
 {% load static %}
 
 {% block title %}{{ object.title }}{% endblock %}
+
 {% block content %}
-<ul>
-    <h1>{{ object.title }}</h1>
-    <p>{{ object.category.name }}</p>
-    <p>Created on {{ object.created_on }}</p>
-    {% if object.created_on|date:"Y-m-d H:i" != object.updated_on|date:"Y-m-d H:i" %}
-        <p>Updated on {{ object.updated_on }}</p>
+<div class="back-button-container" style="text-align: left; margin-bottom: 20px;">
+    {% if view_type == 'detail' %}
+        <a href="{% url 'blog:article_list' %}" class="back-button">← Back to Articles</a>
+    {% elif view_type == 'create' %}
+        <a href="{% url 'blog:article_list' %}" class="back-button">← Cancel</a>
+    {% elif view_type == 'update' %}
+        <a href="{% url 'blog:article' object.pk %}" class="back-button">← Cancel</a>
     {% endif %}
-    <br>
-    <p>{{ object.entry }}</p>
-</ul>
+</div>
+
+{% if view_type == 'detail' %}
+    {% if object.header_img %}
+        <div class="article-header-image" style="text-align: center; margin-top: 20px">
+            <img src="{{ object.header_img.url }}" alt="Header Image" style="max-width: 100%; border-radius: 10px;">
+        </div>
+    {% endif %}
+        <h1 style="margin-bottom: 10px;">{{ object.title }}</h1>
+        <span style="
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-bottom: 20px;">
+            {{ object.category.name }}
+        </span>
+        <p><strong>Written by:</strong> {{ object.author }}</p>
+        <p><strong>Created:</strong> {{ object.created_on|date:"F j, Y, g:i a" }}</p>
+
+        {% if object.created_on|date:"Y-m-d H:i" != object.updated_on|date:"Y-m-d H:i" %}
+            <p><strong>Updated:</strong> {{ object.updated_on|date:"F j, Y, g:i a" }}</p>
+        {% endif %}
+
+        {% if object.author == request.user.profile %}
+            <div class="back-button-container" style="margin-bottom: 20px;">
+                <a href="{% url 'blog:article_update' object.pk %}" class="back-button">✏️ Edit Article</a>
+            </div>
+        {% endif %}
+
+    <p style="margin-top: 30px;">{{ object.entry }}</p>
+
+    <h2 style="margin-top: 40px;">Want to see more like this?</h2>
+    <div class="commissions-list">
+        {% for article in other_articles %}
+            <div class="commission-box">
+                <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
+            </div>
+        {% empty %}
+            <p>It seems the author has no other articles.</p>
+        {% endfor %}
+    </div>
+
+    <h1 style="margin-top: 40px;">Comments</h1>
+    {% if user.is_authenticated %}
+        <form method="post" style="margin-top: 20px;">
+            {% csrf_token %}
+            {{ comment_form.as_p }}
+            <button type="submit">Submit</button>
+        </form>
+    {% else %}
+        <p><a href="{% url 'accounts:login' %}">Log in</a> to leave a comment.</p>
+    {% endif %}
+
+    <div class="comments">
+        {% for comment in comments %}
+            <div class="comment-box">   
+                <p><strong>{{ comment.author }}</strong> <span class="timestamp">| {{ comment.created_on|date:"F j, Y, g:i a" }}</span></p>
+                <p>{{ comment.entry }}</p>
+            </div>
+        {% empty %}
+            <p>No comments yet.</p>
+        {% endfor %}
+    </div>
+
+{% elif view_type == 'create' or view_type == 'update' %}
+    <h1>
+        {% if view_type == 'create' %}
+            Create New Article
+        {% else %}
+            Edit Article
+        {% endif %}
+    </h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">
+            {% if view_type == 'create' %}
+                Publish
+            {% else %}
+                Update
+            {% endif %}
+        </button>
+    </form>
+{% endif %}
 {% endblock %}

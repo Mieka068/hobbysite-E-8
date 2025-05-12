@@ -1,11 +1,28 @@
 {% extends 'base.html' %}
 
-{% block title %}Article Categories{% endblock %}
+{% block title %}Wiki{% endblock %}
 {% block content %}
-<h1>Categories</h1>
-<ul>
-    {% for category in categories %}
-        <li><a href='{{ category.get_absolute_url }}'>{{ category.name }}</a></li>
+    <h1>Wiki</h1>
+    {% if user.is_authenticated %}
+        <h3>Your Articles</h3>
+            <ul>
+                {% for article in user_articles %}
+                    <li><a href='{{ article.get_absolute_url }}'>{{ article.title }}</a></li>
+                {% empty %}
+                    <p>You have not created any articles.</p>
+                {% endfor %}
+            </ul>
+        <p><a href="{% url 'wiki:article_create' %}">Create New Article</a></p>
+    {% endif %}
+    {% for category, articles in category_groups.items %}
+        <h3>{{ category.name }}</h3>
+        {{ category.description }}
+        <ul>
+            {% for article in articles %}
+                <li><a href='{{ article.get_absolute_url }}'>{{ article.title }}</a></li>
+            {% empty %}
+                <p>There are currently no articles under this category.</p>
+            {% endfor %}
+        </ul>
     {% endfor %}
-</ul>
 {% endblock%}
