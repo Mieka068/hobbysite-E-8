@@ -61,7 +61,13 @@
     <!-- Blog Tab -->
     <div id="blog" class="tab-content" style="display: none;">
         <h2>Blog Posts</h2>
-        <p>Coming soon...</p>
+        <ul>
+            {% for article in blog_articles %}
+                <li><a href='{{ article.get_absolute_url }}'>{{ article.title }}</a></li>
+            {% empty %}
+                <p>You have not made any blog articles yet.</p>
+            {% endfor %}
+        </ul>
     </div>
 
     <style>
