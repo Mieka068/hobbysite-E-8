@@ -3,8 +3,8 @@
 {% block title %}{{ article.title }}{% endblock %}
 {% block content %}
     <p><a href="{% url 'wiki:article_list' %}">Return to list of articles</a></p>
-    <img src="{{ article.header_image.url }}">
     <h1>{{ article.title }}</h1>
+    <img src="{{ article.header_image.url }}"><br/>
     Created on: {{ article.created_on }} /
     Last updated on: {{ article.updated_on }}
     {% if profile == article.author %}

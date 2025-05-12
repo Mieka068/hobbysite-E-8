@@ -18,23 +18,26 @@ class ArticleListView(ListView):
 
         if user.is_authenticated:
             profile = get_object_or_404(Profile, user=user)
-            user_articles = Article.objects.filter(author=profile)
             all_articles = Article.objects.exclude(author=profile)
 
-        return all_articles, user_articles
+        return all_articles
 
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
-        all_articles, user_articles = self.get_queryset()
+        all_articles = self.get_queryset()
         category_groups = {}
 
         for category in ArticleCategory.objects.all():
             category_groups[category] = all_articles.filter(category=category)
 
         context['category_groups'] = category_groups
-        context['user_articles'] = user_articles
+
+        if user.is_authenticated:
+            profile = get_object_or_404(Profile, user=user)
+            user_articles = Article.objects.filter(author=profile)
+            context['user_articles'] = user_articles
             
         return context
 
@@ -50,10 +53,11 @@ class ArticleDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         article = self.get_object()
         user = self.request.user
-        profile = get_object_or_404(Profile, user=user)
 
-        context['profile'] = profile
-        context['other_articles'] = Article.objects.filter(category=article.category).exclude(id=article.id)
+        if user.is_authenticated:
+            profile = get_object_or_404(Profile, user=user)
+            context['profile'] = profile
+            context['other_articles'] = Article.objects.filter(category=article.category).exclude(id=article.id)
         context['comment_form'] = CommentForm
 
         return context
