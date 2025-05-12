@@ -128,7 +128,8 @@ def accept_application(request, application_id):
     application.job.commission.update_status()
 
     messages.success(request, "Application accepted!")
-    return redirect('commissions:detail', pk=application.job.commission.id)
+    return redirect('commissions:job_applications', job_id=application.job.id)
+
 
 @login_required
 def reject_application(request, application_id):
@@ -146,8 +147,24 @@ def reject_application(request, application_id):
         application.save()
         messages.success(request, "Application rejected.")
 
-    return redirect('commissions:detail', pk=application.job.commission.id)
+    return redirect('commissions:job_applications', job_id=application.job.id)
 
+
+@login_required
+def job_applications_view(request, job_id):
+    job = get_object_or_404(Job, id=job_id)
+
+    # Only the owner of the commission can view this
+    if job.commission.poster != request.user:
+        messages.error(request, "You do not have permission to reject this application.")
+        return redirect('commissions:detail', pk=job.commission.id)
+
+    applications = job.applications.all()
+
+    return render(request, 'commissions/job_applications.html', {
+        'job': job,
+        'applications': applications,
+    })
 
 
 class CommissionCreateView(LoginRequiredMixin, CreateView):

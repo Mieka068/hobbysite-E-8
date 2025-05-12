@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+    <h1>Dashboard</h1>
+
+    <!-- Tabs: per App -->
+    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+        <button class="tab-button" onclick="showTab('commissions', this)">Commissions</button>
+        <button class="tab-button" onclick="showTab('forum', this)">Forum</button>
+        <button class="tab-button" onclick="showTab('wiki', this)">Wiki</button>
+        <button class="tab-button" onclick="showTab('blog', this)">Blog</button>
+    </div>
+
+    <!-- Commissions Tab -->
+    <div id="commissions" class="tab-content">
+        <h2>Commissions</h2>
+
+        <h3>Commissions You Created</h3>
+        {% if commissions_created %}
+            {% for com in commissions_created %}
+                <div class="commission-box">
+                    <a href="{% url 'commissions:detail' com.id %}">{{ com.title }}</a> - {{ com.status }}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>You have not created any commissions yet.</p>
+        {% endif %}
+
+        <h3>Commissions You Joined</h3>
+        {% if commissions_joined %}
+            {% for com in commissions_joined %}
+                <div class="commission-box">
+                    <a href="{% url 'commissions:detail' com.id %}">{{ com.title }}</a> - {{ com.status }}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>You have not joined any commissions yet.</p>
+        {% endif %}
+    </div>
+
+    <!-- Forum Tab -->
+    <div id="forum" class="tab-content" style="display: none;">
+        <h2>Forum Posts</h2>
+        <p>Coming soon...</p>
+    </div>
+
+    <!-- Wiki Tab -->
+    <div id="wiki" class="tab-content" style="display: none;">
+        <h2>Wiki Contributions</h2>
+        <ul>
+            {% for article in wiki_articles %}
+                <li><a href='{{ article.get_absolute_url }}'>{{ article.title }}</a></li>
+            {% empty %}
+                <p>You have not made any contributions to the wiki yet.</p>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Blog Tab -->
+    <div id="blog" class="tab-content" style="display: none;">
+        <h2>Blog Posts</h2>
+        <p>Coming soon...</p>
+    </div>
+
+    <style>
+        .tab-button {
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: none;
+            background-color: #bdc3c7;  /* grey default */
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+
+    <script>
+        function showTab(tabName, button) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => tab.style.display = 'none');
+            // Show selected tab
+            document.getElementById(tabName).style.display = 'block';
+
+            // Reset all buttons to grey
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.style.backgroundColor = '#bdc3c7';  // grey
+                btn.style.fontWeight = 'normal';
+                btn.style.color = 'white';
+            });
+
+            // Highlight clicked button (blue)
+            button.style.backgroundColor = '#3498db';  // blue
+            button.style.fontWeight = 'bold';
+            button.style.color = 'white';
+        }
+
+        // On page load, highlight the first tab
+        document.addEventListener('DOMContentLoaded', () => {
+            const firstTab = document.querySelectorAll('.tab-button')[0];
+            showTab('commissions', firstTab);
+        });
+    </script>
+
+{% endblock %}
