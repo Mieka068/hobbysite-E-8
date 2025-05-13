@@ -24,11 +24,11 @@ def list_view(request):
         ctx = {
             'all_products': Product.objects.all()
         }
-    return render(request, 'list.html', ctx)
+    return render(request, 'merchstore/list.html', ctx)
 
 def detail_view(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    return render(request, 'detail.html', {'product': product})
+    return render(request, 'merchstore/detail.html', {'product': product})
 
 @login_required
 def add_product_view(request):
@@ -42,7 +42,7 @@ def add_product_view(request):
     else:
         form = AddProductForm(user=request.user)
 
-    return render(request, 'add_product.html', {'form': form})
+    return render(request, 'merchstore/add_product.html', {'form': form})
 
 @login_required
 def buy_product_view(request, product_id):
@@ -76,7 +76,7 @@ def buy_product_view(request, product_id):
     else:
         form = TransactionForm(user=request.user, product=product_obj)
 
-    return render(request, 'buy_product.html', {
+    return render(request, 'merchstore/buy_product.html', {
         'form': form, 'product': product_obj})
 
 @login_required
@@ -104,7 +104,7 @@ def cart_view(request):
         ctx = {
             'all_products': Product.objects.all()
         }
-    return render(request, 'cart.html', ctx)
+    return render(request, 'merchstore/cart.html', ctx)
 
 @login_required
 def edit_product_view(request, product_id):
@@ -128,7 +128,7 @@ def edit_product_view(request, product_id):
     else:
         form = EditProductForm(user=user_profile, instance=selected_product)
 
-    return render(request, 'edit_product.html', {
+    return render(request, 'merchstore/edit_product.html', {
         'form': form,
         'user': user_profile,
         'product': selected_product
@@ -157,4 +157,4 @@ def transactions_view(request):
         ctx = {
             'all_products': Product.objects.all()
         }
-    return render(request, 'transactions.html', ctx)
+    return render(request, 'merchstore/transactions.html', ctx)

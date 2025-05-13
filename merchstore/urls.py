@@ -3,7 +3,7 @@ from django.urls import include, path
 
 from merchstore import views
 
-app_name = 'store'
+app_name = 'merchstore'
 
 urlpatterns = [
     path('', views.list_view, name='list_view'),
