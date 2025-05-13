@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Forum Threads{% endblock %}
+{% block content %}
+<h1>Threads</h1>
+<ul>
+  {% for thread in user_threads %}
+    <li><a href="{% url 'forum:thread_detail' thread.pk %}">{{ thread.title }}</a></li>
+  {% empty %}
+    <li>No threads yet.</li>
+  {% endfor %}
+</ul>
+
+<h1>All Threads by Category</h1>
+{% for category in categories %}
+  <h2>{{ category.name }}</h2>
+  <ul>
+    {% for thread in category.threads.all %}
+      {% if thread not in user_threads %}
+        <li><a href="{% url 'forum:thread_detail' thread.pk %}">{{ thread.title }}</a></li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+{% endfor %}
+
+<a href="{% url 'forum:thread_create' %}">+ Add Thread</a>
+{% endblock %}
