@@ -50,7 +50,6 @@ def dashboard_view(request):
 
     #Forum threads posted by users
     user_threads = Thread.objects.filter(author=user)
-    other_threads = Thread.objects.exclude(author=user)
 
     return render(request, 'user_management/dashboard.html', {
         'commissions_created': commissions_created,
@@ -58,5 +57,4 @@ def dashboard_view(request):
         'wiki_articles': wiki_articles,
         'blog_articles': blog_articles,
         'user_threads': user_threads,
-        'other_threads': other_threads,
     })
