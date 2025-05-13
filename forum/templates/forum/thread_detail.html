@@ -1,9 +1,38 @@
 {% extends 'base.html' %}
-
+{% block title %}{{ thread.title }}{% endblock %}
 {% block content %}
 <h1>{{ thread.title }}</h1>
-<p> By: {{ thread.author }} | Created on: {{ thread.created_on }}</p>
 <p>{{ thread.entry }}</p>
+<p>Category: {{ thread.category.name }}</p>
+<p>Created on: {{ thread.created_on }} | Updated on: {{ thread.updated_on }}</p>
+
+{% if request.user == thread.author %}
+  <a href="{% url 'forum:thread_edit' thread.pk %}">Edit</a>
+{% endif %}
+
+<h2>Comments</h2>
+<ul>
+  {% for comment in comments %}
+    <li>{{ comment.entry }} — {{ comment.author }}</li>
+  {% empty %}
+    <li>No comments yet.</li>
+  {% endfor %}
+</ul>
+
+{% if request.user.is_authenticated %}
+  <form method="post">
+    {% csrf_token %}
+    {{ comment_form.as_p }}
+    <button type="submit">Add Comment</button>
+  </form>
+{% endif %}
+
+<h3>Related Threads</h3>
+<ul>
+  {% for related in related_threads %}
+    <li><a href="{% url 'forum:thread_detail' related.pk %}">{{ related.title }}</a></li>
+  {% endfor %}
+</ul>
 
 <a href="{% url 'forum:thread_list' %}">Back to Thread List</a>
 {% endblock %}
