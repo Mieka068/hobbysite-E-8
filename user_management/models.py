@@ -6,14 +6,11 @@ class Profile(models.Model):
     display_name = models.CharField(max_length=63)
     email = models.EmailField()
 
-<<<<<<< HEAD
     def save(self, *args, **kwargs):
         if self.email and self.user.email != self.email:
             self.user.email = self.email
             self.user.save()
         super().save(*args, **kwargs)
 
-=======
->>>>>>> 566bcc5 (Merged 'store' with user_management.)
     def __str__(self):
         return self.display_name or self.user.username
