@@ -46,25 +46,25 @@
          <br>
          {% if product.owner.user != user and product.stock > 0 %}
             <center>
-                <td><a href="{% url 'store:buy_product_view' product.id %}">{{ 'Buy product?' }}</a></td>
+                <td><a href="{% url 'merchstore:buy_product_view' product.id %}">{{ 'Buy product?' }}</a></td>
             </center>
         {% elif  product.owner.user != user %}
             <center>
-                <td><a href="{% url 'store:detail_view' product.id %}" style="color: red;">{{ 'Product not available.' }}</a></td>
+                <td><a href="{% url 'merchstore:detail_view' product.id %}" style="color: red;">{{ 'Product not available.' }}</a></td>
             </center>
         {% endif %}
 
         {% if product.owner.user == user %}
             <center>
-                <td><a href="{% url 'store:edit_product_view' product.id %}">{{ 'Edit Product' }}</a></td>
+                <td><a href="{% url 'merchstore:edit_product_view' product.id %}">{{ 'Edit Product' }}</a></td>
             </center>
         {% endif %}
 
         <table align="center">
             <tr>
-                <td><a href="{% url 'store:add_product_view' %}">{{ ' Sell a Product' }}</a></td>
+                <td><a href="{% url 'merchstore:add_product_view' %}">{{ ' Sell a Product' }}</a></td>
                 <td>  | </td>
-                <td><a href="{% url 'store:list_view' %}"><p>{{ 'Back to All Products' }}</a></td>
+                <td><a href="{% url 'merchstore:list_view' %}"><p>{{ 'Back to All Products' }}</a></td>
             </tr>
         </table>   
     </nav>  

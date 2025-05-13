@@ -8,14 +8,14 @@
     </header>
     {% if user.is_authenticated %}
         <h2>🎉 Welcome back, {{ user.username }}!</h2>
-        <a href="{% url 'store:cart_view' %}">{{ 'View Cart' }}</a> 
+        <a href="{% url 'merchstore:cart_view' %}">{{ 'View Cart' }}</a> 
         {{ ' | ' }}
-        <a href="{% url 'store:transactions_view' %}">{{ 'View Transactions' }}</a>      
+        <a href="{% url 'merchstore:transactions_view' %}">{{ 'View Transactions' }}</a>      
         <h2>🏷️ Your listings</h2>
         <ul>
             {% for product in owned_products %}
                 <li>
-                    <a href="{% url 'store:detail_view' product.id %}">{{ product.name }}</a>
+                    <a href="{% url 'merchstore:detail_view' product.id %}">{{ product.name }}</a>
                 </li>
             {% endfor %}
         </ul>
@@ -23,7 +23,7 @@
         <ul>
             {% for product in other_products %}
                 <li>
-                    <a href="{% url 'store:detail_view' product.id %}">{{ product.name }}</a>
+                    <a href="{% url 'merchstore:detail_view' product.id %}">{{ product.name }}</a>
                 </li>
             {% endfor %}
         </ul>
@@ -33,7 +33,7 @@
         <ul>
             {% for product in all_products %}
                 <li>
-                    <a href="{% url 'store:detail_view' product.id %}">{{ product.name }}</a>
+                    <a href="{% url 'merchstore:detail_view' product.id %}">{{ product.name }}</a>
                 </li>
             {% endfor %}
         </ul>
@@ -49,7 +49,7 @@
         </form>
         <!-- redirect links -->
          <br>
-        <a href="{% url 'store:add_product_view' %}">{{ 'Sell a Product' }}</a>
+        <a href="{% url 'merchstore:add_product_view' %}">{{ 'Sell a Product' }}</a>
         {% else %}
             Currently logged out. <a href="{% url 'login' %}">Login?</a>
         {% endif %}

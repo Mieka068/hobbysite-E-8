@@ -12,7 +12,7 @@
         {% for transaction in transactions %}
             <ul>
                 <li>
-                    <a href="{% url 'store:detail_view' transaction.product.id %}">
+                    <a href="{% url 'merchstore:detail_view' transaction.product.id %}">
                         Order #{{ forloop.counter }}: {{ transaction.product.name }}
                     </a>
                 </li>
@@ -49,7 +49,7 @@
     </nav> 
 
     <table align="center">
-            <td><a href="{% url 'store:list_view' %}">{{ 'Back to All Products' }}</a></td>
+            <td><a href="{% url 'merchstore:list_view' %}">{{ 'Back to All Products' }}</a></td>
         </tr>
     </table>
 

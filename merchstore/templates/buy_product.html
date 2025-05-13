@@ -14,9 +14,9 @@
     <!-- redirect links -->
     <table align="center">
         <tr>
-            <td><a href="{% url 'store:detail_view' product.id %}"><p>{{ 'Back to Product' }}</a></td>
+            <td><a href="{% url 'merchstore:detail_view' product.id %}"><p>{{ 'Back to Product' }}</a></td>
             <td>  | </td>
-            <td><a href="{% url 'store:list_view' %}"><p>{{ 'Back to All Products' }}</a></td>
+            <td><a href="{% url 'merchstore:list_view' %}"><p>{{ 'Back to All Products' }}</a></td>
         </tr>
     </table>
 {% endblock %}
