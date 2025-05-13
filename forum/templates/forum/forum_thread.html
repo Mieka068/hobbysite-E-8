@@ -1,13 +1,9 @@
 {% extends 'base.html' %}
 
-{% block title %}Forums - {{ category.name }}{% endblock %}
 {% block content %}
-<h1>{{ category.name }}</h1>
-<p>{{ category.description }}</p>
-{% for post in category.posts.all %}
-    <h2>{{ post.title }}</h2>
-    <p>{{ post.entry }}<br>
-    Created on: {{ post.created_on }}<br>
-    Last updated on: {{ post.updated_on}}</p>
-{% endfor %}
+<h1>{{ thread.title }}</h1>
+<p> By: {{ thread.author }} | Created on: {{ thread.created_on }}</p>
+<p>{{ thread.entry }}</p>
+
+<a href="{% url 'forum:thread_list' %}">Back to Thread List</a>
 {% endblock %}
