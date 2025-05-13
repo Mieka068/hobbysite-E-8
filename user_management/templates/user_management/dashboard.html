@@ -43,7 +43,25 @@
     <!-- Forum Tab -->
     <div id="forum" class="tab-content" style="display: none;">
         <h2>Forum Posts</h2>
-        <p>Coming soon...</p>
+        {% if user_threads %}
+            <ul>
+                {% for thread in user_threads %}
+                    <li>
+                        <a href="{% url 'forum:thread_detail' thread.pk %}"> {{ thread.title }}</a>
+                        <small>(in {{ thread.category.name }})</small>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No posts yet.</p>
+        {% endif %}
+
+        <h2> Other Threads </h2>
+        {% for thread in other_threads %}
+            <p><a href="{% url 'forum:thread_detail' thread.pk %}">{{ thread.title }}</a></p>
+        {% empty %}
+            <p> No other posts yet. </p>
+        {% endfor %}
     </div>
 
     <!-- Wiki Tab -->
