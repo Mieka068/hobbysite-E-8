@@ -1,18 +1,14 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse_lazy
 from .models import Thread, ThreadCategory, Comment
 from .forms import CommentForm
 
 
 class ThreadListView(ListView):
-    model = Thread
+    model = ThreadCategory
     template_name = 'forum/thread_list.html'
     context_object_name = 'categories'
-
-    def get_queryset(self):
-        return ThreadCategory.objects.prefetch_related('threads')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
