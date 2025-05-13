@@ -219,7 +219,7 @@
         <div class="nav-left">
             <a href="{% url 'home' %}" class="{% if active_page == 'home' %}active{% endif %}">Home</a>
             <a href="{% url 'commissions:list' %}" class="{% if active_page == 'commissions' %}active{% endif %}">Commissions</a>
-            <a href="{% url 'forum:forum_list' %}" class="{% if active_page == 'forum' %}active{% endif %}">Forum</a>
+            <a href="{% url 'forum:thread_list' %}" class="{% if active_page == 'forum' %}active{% endif %}">Forum</a>
             <a href="{% url 'wiki:article_list' %}" class="{% if active_page == 'wiki' %}active{% endif %}">Wiki</a>
             <a href="{% url 'blog:article_list' %}" class="{% if active_page == 'blog' %}active{% endif %}">Blog</a>
             <a href="{% url 'store:list_view' %}" class="{% if active_page == 'store' %}active{% endif %}">Merchstore</a>
