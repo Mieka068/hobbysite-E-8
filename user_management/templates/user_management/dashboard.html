@@ -55,13 +55,6 @@
         {% else %}
             <p>No posts yet.</p>
         {% endif %}
-
-        <h2> Other Threads </h2>
-        {% for thread in other_threads %}
-            <p><a href="{% url 'forum:thread_detail' thread.pk %}">{{ thread.title }}</a></p>
-        {% empty %}
-            <p> No other posts yet. </p>
-        {% endfor %}
     </div>
 
     <!-- Wiki Tab -->
