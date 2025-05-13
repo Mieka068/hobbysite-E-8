@@ -2,7 +2,7 @@ from django.db import models
 from django.urls import reverse
 
 
-class PostCategory(models.Model):
+class ThreadCategory(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
 
@@ -16,17 +16,22 @@ class PostCategory(models.Model):
         ordering = ['name']
 
 
-class Post(models.Model):
+class Thread(models.Model):
     title = models.CharField(max_length=255)
+    author = models.ForeignKey(
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='posts',
+        )
     category = models.ForeignKey(
-        PostCategory,
+        ThreadCategory,
         on_delete=models.SET_NULL,
         null=True,
         related_name='posts',
         )
     entry = models.TextField()
     created_on = models.DateTimeField(auto_now_add=True)
-    updated_on = models.DateTimeField(auto_now_add=True)
+    updated_on = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.title
