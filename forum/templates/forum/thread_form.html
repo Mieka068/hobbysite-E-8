@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if form.instance.pk %}
+        Edit Thread
+    {% else %}
+        Create Thread
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <h1>
+        {% if form.instance.pk %}
+            Edit Thread
+        {% else %}
+            Create New Thread
+        {% endif %}
+    </h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit">
+            {% if form.instance.pk %}
+                Update Thread
+            {% else %}
+                Create Thread
+            {% endif %}
+        </button>
+    </form>
+
+    <p><a href="{% url 'forum:thread_list' %}">Back to thread list</a></p>
+{% endblock %}
