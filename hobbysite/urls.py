@@ -7,19 +7,14 @@ from django.views.generic import TemplateView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('', user_management_views.homepage, name='home'),
-    path("user_management/", include("user_management.urls")),
     path("commissions/", include("commissions.urls")),
     path('blog/', include('blog.urls', namespace="blog")),
     path('wiki/', include('wiki.urls', namespace='wiki')),
     path('merchstore/', include('merchstore.urls')),
     path('forum/', include('forum.urls', namespace="forum")),
-<<<<<<< HEAD
     path("", TemplateView.as_view(template_name="user_management/homepage.html"), name="home"),
     path("usermanagement/", include("user_management.urls", namespace="user_management")),
     path('accounts/', include('accounts.urls')),
-=======
->>>>>>> a552370 (Made form and view for product list.)
     path('accounts/', include('django.contrib.auth.urls')),
 ]
 
