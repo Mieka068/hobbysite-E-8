@@ -1,9 +1,13 @@
 from django.contrib import admin
-from .models import ArticleCategory, Article
+from .models import ArticleCategory, Article, Comment
 
 
 class ArticleInline(admin.TabularInline):
     model = Article
+
+
+class CommentInline(admin.TabularInline):
+    model = Comment
 
 
 class ArticleCategoryAdmin(admin.ModelAdmin):
@@ -16,6 +20,7 @@ class ArticleCategoryAdmin(admin.ModelAdmin):
 
 class ArticleAdmin(admin.ModelAdmin):
     model = Article
+    inlines = [CommentInline]
 
     search_fields = ('title',)
     list_display = ('title', 'created_on',)
