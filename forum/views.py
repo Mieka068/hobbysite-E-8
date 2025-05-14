@@ -14,10 +14,8 @@ class ThreadListView(ListView):
         context = super().get_context_data(**kwargs)
         if self.request.user.is_authenticated:
             context['user_threads'] = Thread.objects.filter(author=self.request.user)
-            context['other_threads'] = Thread.objects.exclude(author=self.request.user)
         else:
             context['user_threads'] = []
-            context['other_threads'] = Thread.objects.all()
         return context
 
 
@@ -30,9 +28,6 @@ class ThreadDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         thread = self.get_object()
         context['comments'] = thread.comments.all()
-        context['related_threads'] = Thread.objects.filter(
-            category=thread.category
-        ).exclude(pk=thread.pk)[:2]
         if self.request.user.is_authenticated:
             context['comment_form'] = CommentForm()
         return context
