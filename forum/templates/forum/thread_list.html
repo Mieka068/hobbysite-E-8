@@ -1,7 +1,15 @@
 {% extends 'base.html' %}
 {% block title %}Forum Threads{% endblock %}
+
 {% block content %}
 <h1>Threads</h1>
+
+{% if user.is_authenticated %}
+  <p>
+    <a href="{% url 'forum:thread_create' %} class="btn btn-primary>+ Add Thread</a>
+  </p>
+{% endif %}
+
 <ul>
   {% for thread in user_threads %}
     <li><a href="{% url 'forum:thread_detail' thread.pk %}">{{ thread.title }}</a></li>
