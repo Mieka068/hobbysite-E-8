@@ -222,9 +222,7 @@ class CommissionUpdateView(LoginRequiredMixin, UpdateView):
             job_formset.instance = self.object
             job_formset.save()  # Save the jobs
 
-            # Respect manual status unless it's Open
-            if self.object.status == 'Open':
-                self.object.update_status()
+            self.object.update_status()
 
             return response
         else:
