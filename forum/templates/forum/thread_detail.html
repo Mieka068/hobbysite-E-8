@@ -29,6 +29,16 @@
     text-align: center;
   }
 
+  .thread-image {
+    text-align: center;
+    margin-bottom: 15px;
+  }
+
+  .thread-image img {
+    max-width: 100%;
+    border-radius: 10px;
+  }
+
   .dates-container {
     max-width: 700px;
     margin: 0 auto 20px auto;
@@ -37,6 +47,15 @@
     display: flex;
     justify-content: space-between;
     font-size: 0.9em;
+  }
+
+  .author-info {
+    max-width: 700px;
+    margin: 0 auto 25px auto;
+    font-style: italic;
+    color: #555;
+    font-size: 0.95em;
+    text-align: left;
   }
 
   .thread-body {
@@ -129,6 +148,16 @@
     {% endif %}
   </div>
 </div>
+
+{% if thread.image %}
+    <div class="thread-image">
+      <img src="{{ thread.image.url }}" alt="Thread Image">
+    </div>
+  {% endif %}
+
+<div class="author-info">
+    <strong>Written by:</strong> {{ object.author }}
+  </div>
 
 <div class="thread-body">
   <p>{{ thread.entry|linebreaksbr }}</p>

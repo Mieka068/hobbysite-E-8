@@ -48,7 +48,7 @@ class ThreadDetailView(DetailView):
 
 class ThreadCreateView(LoginRequiredMixin, CreateView):
     model = Thread
-    fields = ['title', 'category', 'entry']
+    fields = ['title', 'category', 'entry', 'image']
     template_name = 'forum/thread_form.html'
 
     def form_valid(self, form):
@@ -62,7 +62,7 @@ class ThreadCreateView(LoginRequiredMixin, CreateView):
 
 class ThreadUpdateView(LoginRequiredMixin, UpdateView):
     model = Thread
-    fields = ['title', 'category', 'entry']
+    fields = ['title', 'category', 'entry', 'image']
     template_name = 'forum/thread_form.html'
 
     def get_success_url(self):

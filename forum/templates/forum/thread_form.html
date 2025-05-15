@@ -47,7 +47,7 @@
     {% endif %}
 </h1>
 
-<form method="post" class="thread-form">
+<form method="post" enctype="multipart/form-data" class="thread-form">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">
