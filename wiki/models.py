@@ -28,13 +28,17 @@ class Article(models.Model):
         related_name='articles',
     )
     entry = models.TextField(null=False)
-    header_image = models.ImageField(upload_to='wiki_img', null=True, blank=True)
+    header_image = models.ImageField(
+        upload_to='wiki_img',
+        null=True,
+        blank=True
+    )
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.title
-    
+
     def get_absolute_url(self):
         return reverse('wiki:article_detail', args=[str(self.id)])
 

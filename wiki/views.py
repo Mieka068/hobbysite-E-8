@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
-from .models import ArticleCategory, Article, Comment
+from .models import ArticleCategory, Article
 from user_management.models import Profile
 from .forms import ArticleForm, CommentForm
 
@@ -57,11 +57,13 @@ class ArticleDetailView(DetailView):
         if user.is_authenticated:
             profile = get_object_or_404(Profile, user=user)
             context['profile'] = profile
-            context['other_articles'] = Article.objects.filter(category=article.category).exclude(id=article.id)
+            context['other_articles'] = Article.objects.filter(
+                category=article.category
+                ).exclude(id=article.id)
         context['comment_form'] = CommentForm
 
         return context
-    
+
     def post(self, request, *args, **kwargs):
         article = self.get_object()
         user = self.request.user
@@ -77,7 +79,7 @@ class ArticleDetailView(DetailView):
                 comment.save()
 
                 return redirect('wiki:article_detail', pk=article.pk)
-            
+
         return self.get(request, *args, **kwargs)
 
 
@@ -85,6 +87,7 @@ class ArticleCreateView(LoginRequiredMixin, CreateView):
     model = Article
     template_name = 'wiki/create_update.html'
     form_class = ArticleForm
+    redirect_field_name = 'accounts/login'
     success_url = reverse_lazy('wiki:article_list')
 
     def form_valid(self, form):
@@ -98,4 +101,5 @@ class ArticleUpdateView(LoginRequiredMixin, UpdateView):
     model = Article
     template_name = 'wiki/create_update.html'
     form_class = ArticleForm
+    redirect_field_name = 'accounts/login'
     success_url = reverse_lazy('wiki:article_list')
