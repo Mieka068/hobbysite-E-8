@@ -4,34 +4,15 @@
 {% block title %}Article Categories{% endblock %}
 
 {% block content %}
-<<<<<<< HEAD
     <h1 style="text-align: center;">📝 Blog Articles</h1>
 
     <!-- Create Article Button -->
     {% if user.is_authenticated %}
         <div style="text-align: center; margin: 20px 0;">
             <a href="{% url 'blog:article_create' %}" class="solid-blue-button">+ Create New Article</a>
-=======
-        <h1>Blog</h1>
-
-        <div style="text-align: right; margin-bottom: 20px;">
-            <a href="{% url 'blog:article_create' %}" class="back-button">Create New Article</a>
-        </div>
-
-        <h2>Your Articles</h2>
-        <div class="commissions-list">
-            {% for article in my_articles %}
-                <div class="commission-box">
-                    <a href="{{ article.get_absolute_url }}">{{ article.title }} by You</a>
-                </div>
-            {% empty %}
-                <p>You haven't published any articles yet.</p>
-            {% endfor %}
->>>>>>> 524b53b8d1492c33cae29a57713d9f7ff421e120
         </div>
     {% endif %}
 
-<<<<<<< HEAD
     <!-- My Articles -->
     {% if my_articles %}
         <section>
@@ -41,19 +22,6 @@
                     <a href="{{ article.get_absolute_url }}" class="grey-box blog-box">
                         📰 <strong>{{ article.title }}</strong> <span class="tag">by you</span>
                     </a>
-=======
-        <h2>Other Articles</h2>
-
-        {% for category, articles in category_groups.items %}
-            <h3 style="color: #2c3e50; margin-top: 20px;">{{ category.name }}</h3>
-            <div class="commissions-list">
-                {% for article in articles %}
-                    <div class="commission-box">
-                        <a href="{{ article.get_absolute_url }}">{{ article.title }} by {{ article.author }}</a>
-                    </div>
-                {% empty %}
-                    <p>No articles in this category.</p>
->>>>>>> 524b53b8d1492c33cae29a57713d9f7ff421e120
                 {% endfor %}
             </div>
         </section>
