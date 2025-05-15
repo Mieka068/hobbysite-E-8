@@ -7,6 +7,7 @@ from commissions.models import Commission, JobApplication
 from wiki.models import Article
 from blog.models import Article as BlogArticle
 from forum.models import Thread
+from merchstore.models import Product
 
 # Profile Update View - Keep in Profile app
 @login_required
@@ -51,10 +52,14 @@ def dashboard_view(request):
     #Forum threads posted by users
     user_threads = Thread.objects.filter(author=user)
 
+    # Products created by this user
+    user_products = Product.objects.filter(owner__user=request.user)
+
     return render(request, 'user_management/dashboard.html', {
         'commissions_created': commissions_created,
         'commissions_joined': commissions_joined,
         'wiki_articles': wiki_articles,
         'blog_articles': blog_articles,
         'user_threads': user_threads,
+        'user_products': user_products,
     })
