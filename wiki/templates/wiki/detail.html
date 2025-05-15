@@ -5,7 +5,7 @@
     <p><a href="{% url 'wiki:article_list' %}">Return to list of articles</a></p>
     <h1>{{ article.title }}</h1>
     {% if article.header_image %}
-        <img src="{{ article.header_image.url }}"><br/>
+        <img src="{{ article.header_image.url }}" style="max-width: 100%; border-radius: 10px;"><br/>
     {% endif %}
     Created on: {{ article.created_on }} /
     Last updated on: {{ article.updated_on }}

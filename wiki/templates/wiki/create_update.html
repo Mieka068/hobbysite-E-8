@@ -3,7 +3,7 @@
 {% block title %}{% if view.object %}Create{% else %}Edit{% endif %} Article{% endblock %}
 {% block content %}
     <h1>Create Article</h1>
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Save</button>
