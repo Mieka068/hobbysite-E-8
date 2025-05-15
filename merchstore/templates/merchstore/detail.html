@@ -56,8 +56,15 @@
   }
 
   .status {
-    font-weight: 700;
-    color: {% if product.status == "Available" %}green{% else %}red{% endif %};
+  font-weight: 700;
+  }
+
+  .status.available {
+    color: green;
+  }
+  
+  .status.unavailable {
+    color: red;
   }
 
   .buy-link, .edit-link, .unavailable-link {
