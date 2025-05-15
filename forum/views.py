@@ -3,6 +3,7 @@ from django.shortcuts import redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Thread, ThreadCategory, Comment
 from .forms import CommentForm
+from django.urls import reverse
 
 
 class ThreadListView(ListView):
@@ -58,9 +59,16 @@ class ThreadCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
+    
+    def get_success_url(self):
+        return reverse('forum:thread_list')
+
 
 
 class ThreadUpdateView(LoginRequiredMixin, UpdateView):
     model = Thread
     fields = ['title', 'category', 'entry']
     template_name = 'forum/thread_form.html'
+
+    def get_success_url(self):
+        return reverse('forum:thread_detail', kwargs={'pk': self.object.pk})
