@@ -14,8 +14,7 @@ class ProductAdmin(admin.ModelAdmin):
 
 class TransactionAdmin(admin.ModelAdmin):
     model = Transaction
-    list_display = ['transaction_status', 'buyer', 
-                    'product', 'amount',
+    list_display = ['product', 'buyer', 'amount',
                     'status', 'created_on'
                     ]
     
