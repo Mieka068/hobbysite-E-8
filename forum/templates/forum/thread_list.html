@@ -9,22 +9,22 @@
         <div style="text-align: center; margin: 20px 0;">
             <a href="{% url 'forum:thread_create' %}" class="solid-blue-button">+ Add Thread</a>
         </div>
-    {% endif %}
 
-    <!-- User Threads -->
-    {% if user_threads %}
-        <section>
-            <h2>🧵 Your Threads</h2>
-            <div class="forum-list-vertical">
-                {% for thread in user_threads %}
-                    <a href="{% url 'forum:thread_detail' thread.pk %}" class="grey-box forum-box">
-                        💡 <strong>{{ thread.title }}</strong> <span class="tag">by you</span>
-                    </a>
-                {% endfor %}
-            </div>
-        </section>
-    {% else %}
-        <p style="text-align: center; font-style: italic;">You haven't created any threads yet.</p>
+        <!-- User Threads -->
+        {% if user_threads %}
+            <section>
+                <h2>🧵 Your Threads</h2>
+                <div class="forum-list-vertical">
+                    {% for thread in user_threads %}
+                        <a href="{% url 'forum:thread_detail' thread.pk %}" class="grey-box forum-box">
+                            💡 <strong>{{ thread.title }}</strong> <span class="tag">by you</span>
+                        </a>
+                    {% endfor %}
+                </div>
+            </section>
+        {% else %}
+            <p style="text-align: center; font-style: italic;">You haven't created any threads yet.</p>
+        {% endif %}
     {% endif %}
 
     <!-- All Threads by Category -->
@@ -39,7 +39,7 @@
                             {% for thread in threads %}
                                 {% if thread not in user_threads %}
                                     <a href="{% url 'forum:thread_detail' thread.pk %}" class="grey-box forum-box">
-                                        💬 <strong>{{ thread.title }}</strong> <span class="tag">by {{ thread.creator }}</span>
+                                        💬 <strong>{{ thread.title }}</strong> <span class="tag">by {{ thread.author }}</span>
                                     </a>
                                 {% endif %}
                             {% endfor %}
