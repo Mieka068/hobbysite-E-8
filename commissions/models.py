@@ -20,23 +20,42 @@ class Commission(models.Model):
     poster = models.ForeignKey(User, on_delete=models.CASCADE, related_name='commissions')
 
     class Meta:
-        ordering = ['created_on']  # Ascending by default
+        ordering = [
+            models.Case(
+                models.When(status='Open', then=models.Value(0)),
+                models.When(status='Full', then=models.Value(1)),
+                models.When(status='Completed', then=models.Value(2)),
+                models.When(status='Discontinued', then=models.Value(3)),
+                output_field=models.IntegerField(),
+            ),
+            'created_on',  # secondary ordering by created_on ascending (change to '-created_on' for descending)
+        ]
 
     def update_status(self):
-        # Only set to Full if ALL jobs are Full
+        # If status is manually set to Completed or Discontinued, don't override
+        if self.status in ['Completed', 'Discontinued']:
+            return
+
         jobs = self.jobs.all()
 
-        if all(job.status == 'Full' for job in self.jobs.all()):
-            if self.status != 'Full':
-                self.status = 'Full'
-                self.save()
-        else:
+        # If no jobs, status should be 'Open'
+        if jobs.count() == 0:
             if self.status != 'Open':
                 self.status = 'Open'
-                self.save()
+                self.save(update_fields=['status'])
+            return
 
-    def __str__(self):
-        return f"{self.title} ({self.status})"
+        # If all jobs are full, commission is full
+        if all(job.status == 'Full' for job in jobs):
+            if self.status != 'Full':
+                self.status = 'Full'
+                self.save(update_fields=['status'])
+        else:
+            # Otherwise commission should be Open (if not manual Completed/Discontinued)
+            if self.status != 'Open':
+                self.status = 'Open'
+                self.save(update_fields=['status'])
+
 
 
 class Job(models.Model):
