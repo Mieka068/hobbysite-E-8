@@ -38,7 +38,7 @@ def add_product_view(request):
             product = form.save(commit=False)
             product.owner = request.user.profile
             product.save()
-            return redirect('store:list_view')
+            return redirect('merchstore:list_view')
     else:
         form = AddProductForm(user=request.user)
 
@@ -50,7 +50,7 @@ def buy_product_view(request, product_id):
         product_obj = Product.objects.get(id=product_id)
     
     except Product.DoesNotExist:
-        return redirect('store:list_view')
+        return redirect('merchstore:list_view')
 
     # Prevent invalid transaction attempts (e.g., buying own product, out of stock)
     if product_obj.owner == request.user.profile:
@@ -69,7 +69,7 @@ def buy_product_view(request, product_id):
                 transaction.save()
                 product_obj.stock -= amount
                 product_obj.save()
-                return redirect('store:cart_view')
+                return redirect('merchstore:cart_view')
             else:
                 form.add_error('amount', 'You have selected quantity higher than the available stock.')
     
@@ -124,7 +124,7 @@ def edit_product_view(request, product_id):
             product = form.save(commit=False)
             product.owner = user_profile
             product.save()
-            return redirect('store:list_view')
+            return redirect('merchstore:list_view')
     else:
         form = EditProductForm(user=user_profile, instance=selected_product)
 
