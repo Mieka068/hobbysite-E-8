@@ -3,25 +3,73 @@
 {% block title %}{{ view.object|default:"Create" }} Commission{% endblock %}
 
 {% block content %}
-  <h1>{% if view.object %}Edit{% else %}Create{% endif %} Commission</h1>
 
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <h2>Jobs</h2>
-    {{ job_formset.management_form }}
-    {% for form in job_formset %}
-      <div class="commission-box">
-        {{ form.as_p }}
-        {% if form.instance.pk %}
-          <p>Existing Job</p>
-        {% endif %}
-      </div>
-    {% endfor %}
-    <button type="submit">Save</button>
-  </form>
+<style>
+  .grey-box {
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    padding: 15px 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+  }
+  form {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  h1, h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .solid-blue-button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    display: block;
+    margin: 25px auto 0 auto;
+  }
+  .back-button-container {
+    text-align: center;
+    margin-top: 30px;
+  }
+  .commission-box {
+    margin-bottom: 15px;
+    padding: 15px 20px;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  p {
+    margin: 8px 0;
+  }
+</style>
 
-  <div class="back-button-container">
-    <a href="{% url 'commissions:list' %}" class="back-button">← Back to List</a>
-  </div>
+<h1>{% if view.object %}Edit{% else %}Create{% endif %} Commission</h1>
+
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+
+  <h2>Jobs</h2>
+  {{ job_formset.management_form }}
+
+  {% for form in job_formset %}
+    <div class="commission-box">
+      {{ form.as_p }}
+      {% if form.instance.pk %}
+        <p><em>Existing Job</em></p>
+      {% endif %}
+    </div>
+  {% endfor %}
+
+  <button type="submit" class="solid-blue-button">Save</button>
+</form>
+
+<div class="back-button-container">
+  <a href="{% url 'commissions:list' %}" class="back-button">← Back to List</a>
+</div>
+
 {% endblock %}

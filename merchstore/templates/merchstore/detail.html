@@ -31,12 +31,6 @@
         <br>     
         <!-- login/logout buttons -->
         {% if request.user.is_authenticated %}
-        
-        <form action="{% url 'logout' %}" method="post">
-            Currently logged in as <b>'{{ user.username }}'. </b>
-            {% csrf_token %}
-            <button type="submit">Logout</button>
-        </form>
 
         {% else %}
         Currently logged out. <a href="{% url 'login' %}">Login?</a>

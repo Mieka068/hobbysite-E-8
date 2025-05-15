@@ -1,23 +1,151 @@
 {% extends 'base.html' %}
+
 {% block title %}{{ thread.title }}{% endblock %}
+
 {% block content %}
-<h1>{{ thread.title }}</h1>
-<p>{{ thread.entry }}</p>
-<p>Category: {{ thread.category.name }}</p>
-<p>Created on: {{ thread.created_on }} | Updated on: {{ thread.updated_on }}</p>
+<style>
+  .top-bar {
+    max-width: 700px;
+    margin: 20px auto 10px auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 
-{% if request.user == thread.author %}
-  <a href="{% url 'forum:thread_edit' thread.pk %}">Edit</a>
-{% endif %}
+  h1.thread-title {
+    text-align: center;
+    margin-bottom: 8px;
+  }
 
-<h2>Comments</h2>
-<ul>
-  {% for comment in comments %}
-    <li>{{ comment.entry }} — {{ comment.author }}</li>
+  .category-tag {
+    display: inline-block;
+    background-color: #3498db;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 0.9em;
+    font-weight: bold;
+    margin: 0 auto 15px auto;
+    text-align: center;
+  }
+
+  .dates-container {
+    max-width: 700px;
+    margin: 0 auto 20px auto;
+    font-style: italic;
+    color: #555;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9em;
+  }
+
+  .thread-body {
+    max-width: 700px;
+    margin: 0 auto 40px auto;
+    padding: 0 15px;
+    line-height: 1.6;
+    font-size: 1.05em;
+    white-space: normal;
+    word-wrap: break-word;
+  }
+
+  .comments {
+    max-width: 700px;
+    margin: 0 auto 40px auto;
+  }
+
+  .comment-box {
+    border-top: 1px solid #ddd;
+    padding: 15px 20px;
+  }
+
+  .comment-box p {
+    margin: 5px 0;
+  }
+
+  .timestamp {
+    color: #999;
+    font-size: 0.85em;
+  }
+
+  form {
+    max-width: 700px;
+    margin: 20px auto 40px auto;
+  }
+
+  form button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    display: block;
+    margin: 20px auto 0 auto;
+  }
+
+  .related-box {
+    max-width: 700px;
+    margin: 0 auto 40px auto;
+  }
+
+  .related-item {
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fafafa;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  }
+
+  .related-item a {
+    font-weight: 600;
+    text-decoration: none;
+    color: #3498db;
+    font-size: 1.1em;
+  }
+
+</style>
+
+<div class="top-bar">
+  <a href="{% url 'forum:thread_list' %}" class="back-button">← Back to Threads</a>
+  {% if request.user == thread.author %}
+    <a href="{% url 'forum:thread_edit' thread.pk %}" class="back-button">✏️ Edit Thread</a>
+  {% else %}
+    <div></div>  {# Spacer for alignment #}
+  {% endif %}
+</div>
+
+<h1 class="thread-title">{{ thread.title }}</h1>
+
+<div class="category-tag">{{ thread.category.name }}</div>
+
+<div class="dates-container">
+  <div><strong>Created:</strong> {{ thread.created_on|date:"F j, Y, g:i a" }}</div>
+  <div>
+    {% if thread.created_on|date:"Y-m-d H:i" != thread.updated_on|date:"Y-m-d H:i" %}
+      <strong>Updated:</strong> {{ thread.updated_on|date:"F j, Y, g:i a" }}
+    {% endif %}
+  </div>
+</div>
+
+<div class="thread-body">
+  <p>{{ thread.entry|linebreaksbr }}</p>
+</div>
+
+<h2 style="text-align: center; margin-bottom: 20px;">More Like This</h2>
+<div class="related-box">
+  {% for related in related_threads %}
+    <div class="related-item">
+      <a href="{% url 'forum:thread_detail' related.pk %}">{{ related.title }}</a>
+    </div>
   {% empty %}
-    <li>No comments yet.</li>
+    <p>No related threads found.</p>
   {% endfor %}
-</ul>
+</div>
+
+<h2 style="text-align: center; margin-bottom: 20px;">Comments</h2>
 
 {% if request.user.is_authenticated %}
   <form method="post">
@@ -25,14 +153,18 @@
     {{ comment_form.as_p }}
     <button type="submit">Add Comment</button>
   </form>
+{% else %}
+  <p style="text-align: center;"><a href="{% url 'accounts:login' %}">Log in</a> to leave a comment.</p>
 {% endif %}
 
-<h3>Related Threads</h3>
-<ul>
-  {% for related in related_threads %}
-    <li><a href="{% url 'forum:thread_detail' related.pk %}">{{ related.title }}</a></li>
+<div class="comments">
+  {% for comment in comments %}
+    <div class="comment-box">
+      <p><strong>{{ comment.author }}</strong> <span class="timestamp">| {{ comment.created_on|date:"F j, Y, g:i a" }}</span></p>
+      <p>{{ comment.entry|linebreaksbr }}</p>
+    </div>
+  {% empty %}
+    <p>No comments yet.</p>
   {% endfor %}
-</ul>
-
-<a href="{% url 'forum:thread_list' %}">Back to Thread List</a>
+</div>
 {% endblock %}

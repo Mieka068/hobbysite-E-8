@@ -1,58 +1,71 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block title %}Merchandise Store{% endblock %}
 
 {% block content %}
-    <header>
-        <h1>Merchandise Store</h1>
-    </header>
+    <h1 style="text-align: center;">🛍️ Merchandise Store</h1>
+
+    <!-- Top Action Buttons -->
     {% if user.is_authenticated %}
-        <h2>🎉 Welcome back, {{ user.username }}!</h2>
-        <a href="{% url 'merchstore:cart_view' %}">{{ 'View Cart' }}</a> 
-        {{ ' | ' }}
-        <a href="{% url 'merchstore:transactions_view' %}">{{ 'View Transactions' }}</a>      
-        <h2>🏷️ Your listings</h2>
-        <ul>
-            {% for product in owned_products %}
-                <li>
-                    <a href="{% url 'merchstore:detail_view' product.id %}">{{ product.name }}</a>
-                </li>
-            {% endfor %}
-        </ul>
-        <h2>🛒 Other products</h2>
-        <ul>
-            {% for product in other_products %}
-                <li>
-                    <a href="{% url 'merchstore:detail_view' product.id %}">{{ product.name }}</a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <h2>Welcome!</h2>
-        <h2>All products</h2>
-        <ul>
-            {% for product in all_products %}
-                <li>
-                    <a href="{% url 'merchstore:detail_view' product.id %}">{{ product.name }}</a>
-                </li>
-            {% endfor %}
-        </ul>
+        <div style="text-align: center; margin: 20px 0;">
+            <a href="{% url 'merchstore:add_product_view' %}" class="solid-blue-button">+ Sell a Product</a>
+            <a href="{% url 'merchstore:cart_view' %}" class="solid-blue-button">🛒 View Cart</a>
+            <a href="{% url 'merchstore:transactions_view' %}" class="solid-blue-button">📦 View Transactions</a>
+        </div>
     {% endif %}
 
-    <!-- login/logout buttons -->
-    <nav>
-        {% if request.user.is_authenticated %}
-        <form action="{% url 'logout' %}" method="post">
-            Currently logged in as <b>'{{ user.username }}'. </b>
-            {% csrf_token %}
-            <button type="submit">Logout</button>
-        </form>
-        <!-- redirect links -->
-         <br>
-        <a href="{% url 'merchstore:add_product_view' %}">{{ 'Sell a Product' }}</a>
-        {% else %}
-            Currently logged out. <a href="{% url 'login' %}">Login?</a>
-        {% endif %}
-    </nav> 
+    <!-- Authenticated User Sections -->
+    {% if user.is_authenticated %}
+        <!-- Your Listings -->
+        <section>
+            <h2 style="margin-top: 40px;">📌 Your Listings</h2>
+            {% if owned_products %}
+                <div class="product-grid">
+                    {% for product in owned_products %}
+                        <a href="{% url 'merchstore:detail_view' product.id %}" class="grey-box">
+                            <h3>{{ product.name }}</h3>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p style="text-align: center; font-style: italic;">You haven't listed anything yet.</p>
+            {% endif %}
+        </section>
 
+        <!-- Other Products -->
+        <section>
+            <h2 style="margin-top: 40px;">🛍️ Explore Products</h2>
+            {% if other_products %}
+                <div class="product-grid">
+                    {% for product in other_products %}
+                        <a href="{% url 'merchstore:detail_view' product.id %}" class="grey-box">
+                            <h3>{{ product.name }}</h3>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p style="text-align: center; font-style: italic;">No other products available right now.</p>
+            {% endif %}
+        </section>
+
+    {% else %}
+        <!-- Guest View -->
+        <p style="text-align: center; margin-top: 30px;">
+            You are currently logged out. <a href="{% url 'login' %}">Login?</a>
+        </p>
+
+        <h2 style="margin-top: 40px;">🛍️ Available Products</h2>
+        {% if all_products %}
+            <div class="product-grid">
+                {% for product in all_products %}
+                    <a href="{% url 'merchstore:detail_view' product.id %}" class="grey-box">
+                        <h3>{{ product.name }}</h3>
+                        <p class="card-meta">Click to view</p>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p style="text-align: center; font-style: italic;">No products available.</p>
+        {% endif %}
+    {% endif %}
 {% endblock %}

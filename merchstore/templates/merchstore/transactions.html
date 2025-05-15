@@ -3,54 +3,107 @@
 {% block title %}Merchandise Store{% endblock %}
 
 {% block content %}
-    <header>
-        <h1>Merchandise Store</h1>
-    </header>
-    {% if user.is_authenticated %}
-        <h2>🛒 Your Transactions</h2>
-        <h4>Orders on your products placed by your customers can be found here.</h4>
-        {% for transaction in transactions %}
-            <ul>
-                <li>
-                    <a href="{% url 'merchstore:detail_view' transaction.product.id %}">
-                        Order #{{ forloop.counter }}: {{ transaction.product.name }}
-                    </a>
-                </li>
-                <ul>
-                    <li> Buyer:  <i>{{ transaction.buyer }}</i></li>
-                    <li> Ordered quantity:  <i>{{ transaction.amount }}</i></li>
-                    <li> Ordered on:  <i>{{ transaction.created_on }}</i></li>
-                    <li> Transaction status:  <i>{{ transaction.status }}</i></li>
-                </ul>
-            </ul>
-        {% endfor %}
-    {% else %}
-        <h2>Uh-oh... seems you're logged out.</h2>
-            <a href="{% url 'login' %}">Login?</a>
-    {% endif %}
+<style>
+  h1, h2, h4 {
+    text-align: center;
+    margin-bottom: 15px;
+  }
 
-    {% if transactions_made == 0 %}
-    <h4> Seems you have no products sold yet. Come back later.</h4>
+  .transaction-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin-top: 20px;
+  }
+
+  .transaction-item {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fafafa;
+    transition: box-shadow 0.3s;
+  }
+
+  .transaction-item:hover {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .transaction-item a {
+    font-weight: 600;
+    text-decoration: none;
+    color: #3498db;
+    font-size: 1.1em;
+  }
+
+  .transaction-details {
+    margin-top: 8px;
+    font-style: italic;
+    color: #555;
+  }
+
+  .transaction-details div {
+    margin-bottom: 5px;
+  }
+
+  .solid-blue-button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 5px;
+    font-weight: 600;
+    text-align: center;
+    display: inline-block;
+    cursor: pointer;
+    text-decoration: none;
+    margin: 30px auto 0 auto;
+  }
+
+  .no-transactions {
+    text-align: center;
+    font-style: italic;
+    margin-top: 30px;
+    color: #777;
+  }
+</style>
+
+<header>
+  <h1>🛍️ Merchandise Store</h1>
+</header>
+
+{% if user.is_authenticated %}
+  <h2>🛒 Your Transactions</h2>
+  <h4>Orders on your products placed by your customers can be found here.</h4>
+
+  {% if transactions %}
+    <div class="transaction-grid">
+      {% for transaction in transactions %}
+        <div class="transaction-item">
+          <a href="{% url 'merchstore:detail_view' transaction.product.id %}">
+            Order #{{ forloop.counter }}: {{ transaction.product.name }}
+          </a>
+          <div class="transaction-details">
+            <div>Buyer: <i>{{ transaction.buyer }}</i></div>
+            <div>Ordered quantity: <i>{{ transaction.amount }}</i></div>
+            <div>Ordered on: <i>{{ transaction.created_on }}</i></div>
+            <div>Transaction status: <i>{{ transaction.status }}</i></div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="no-transactions">Seems you have no products sold yet. Come back later.</p>
+  {% endif %}
+
+{% else %}
+  <h2>Uh-oh... seems you're logged out.</h2>
+  <p style="text-align:center;">
+    <a href="{% url 'login' %}" class="solid-blue-button">Login</a>
+  </p>
 {% endif %}
 
-    <!-- login/logout buttons -->
-    <nav>
-        {% if request.user.is_authenticated %}
-        <form action="{% url 'logout' %}" method="post">
-            Currently logged in as <b>'{{ user.username }}'. </b>
-            {% csrf_token %}
-            <button type="submit">Logout</button>
-        </form>
-        <!-- redirect links -->
-         <br>
-        {% else %}
-            Currently logged out. <a href="{% url 'login' %}">Login?</a>
-        {% endif %}
-    </nav> 
-
-    <table align="center">
-            <td><a href="{% url 'merchstore:list_view' %}">{{ 'Back to All Products' }}</a></td>
-        </tr>
-    </table>
+<div style="text-align: center;">
+  <a href="{% url 'merchstore:list_view' %}" class="solid-blue-button">← Back to All Products</a>
+</div>
 
 {% endblock %}

@@ -1,26 +1,106 @@
 {% extends 'base.html' %}
 {% block title %}Forum Threads{% endblock %}
+
 {% block content %}
-<h1>Threads</h1>
-<ul>
-  {% for thread in user_threads %}
-    <li><a href="{% url 'forum:thread_detail' thread.pk %}">{{ thread.title }}</a></li>
-  {% empty %}
-    <li>No threads yet.</li>
-  {% endfor %}
-</ul>
+    <h1 style="text-align: center;">💬 Forum Threads</h1>
 
-<h1>All Threads by Category</h1>
-{% for category in categories %}
-  <h2>{{ category.name }}</h2>
-  <ul>
-    {% for thread in category.threads.all %}
-      {% if thread not in user_threads %}
-        <li><a href="{% url 'forum:thread_detail' thread.pk %}">{{ thread.title }}</a></li>
-      {% endif %}
-    {% endfor %}
-  </ul>
-{% endfor %}
+    <!-- Create Thread Button -->
+    {% if user.is_authenticated %}
+        <div style="text-align: center; margin: 20px 0;">
+            <a href="{% url 'forum:thread_create' %}" class="solid-blue-button">+ Add Thread</a>
+        </div>
+    {% endif %}
 
-<a href="{% url 'forum:thread_create' %}">+ Add Thread</a>
+    <!-- User Threads -->
+    {% if user_threads %}
+        <section>
+            <h2>🧵 Your Threads</h2>
+            <div class="forum-list-vertical">
+                {% for thread in user_threads %}
+                    <a href="{% url 'forum:thread_detail' thread.pk %}" class="grey-box forum-box">
+                        💡 <strong>{{ thread.title }}</strong> <span class="tag">by you</span>
+                    </a>
+                {% endfor %}
+            </div>
+        </section>
+    {% else %}
+        <p style="text-align: center; font-style: italic;">You haven't created any threads yet.</p>
+    {% endif %}
+
+    <!-- All Threads by Category -->
+    <section style="margin-top: 40px;">
+        <h2>📂 Threads by Category</h2>
+        {% for category in categories %}
+            <section style="margin-top: 30px;">
+                <h3 style="color: #2c3e50;">📁 {{ category.name }}</h3>
+                {% with category.threads.all as threads %}
+                    {% if threads %}
+                        <div class="forum-list-vertical">
+                            {% for thread in threads %}
+                                {% if thread not in user_threads %}
+                                    <a href="{% url 'forum:thread_detail' thread.pk %}" class="grey-box forum-box">
+                                        💬 <strong>{{ thread.title }}</strong> <span class="tag">by {{ thread.creator }}</span>
+                                    </a>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p style="text-align: center; font-style: italic;">No threads in this category.</p>
+                    {% endif %}
+                {% endwith %}
+            </section>
+        {% empty %}
+            <p style="text-align: center; font-style: italic;">No categories available.</p>
+        {% endfor %}
+    </section>
+
+    <style>
+        .forum-list-vertical {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-top: 20px;
+        }
+
+        .forum-box {
+            text-align: left;
+            padding: 16px 20px;
+            font-weight: 500;
+            color: #333;
+            border-left: 5px solid #3498db;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .forum-box:hover {
+            background-color: #e9e9e9;
+            transform: translateX(2px);
+        }
+
+        .tag {
+            font-size: 0.9em;
+            color: #888;
+            margin-left: 10px;
+            font-style: italic;
+        }
+
+        .forum-box:hover .tag {
+            color: #555;
+        }
+
+        .solid-blue-button {
+            display: inline-block;
+            padding: 12px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .solid-blue-button:hover {
+            background-color: #217dbb;
+        }
+    </style>
 {% endblock %}

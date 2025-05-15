@@ -3,15 +3,69 @@
 {% block title %}Add a new product{% endblock %}
 
 {% block content %}
-    <h2>Make a new product listing!</h2>
+  <style>
+    .form-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 25px;
+    }
+
+    form p {
+      margin-bottom: 15px;
+    }
+
+    form label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+
+    button[type="submit"] {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .back-link {
+      display: block;
+      margin-top: 25px;
+      text-align: center;
+      color: #3498db;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+
+  <div class="form-container">
+    <h1 style="text-align: center;">🛍️ Create a New Product Listing</h1>
+    <p style="text-align: center; color: #555;">Fill out the form below to add a new product to the merch store.</p>
 
     <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Submit</button>
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Submit</button>
     </form>
-    
-    <br>
-    <a href="{% url 'merchstore:list_view' %}">Back to All Products</a>
-    <br>
+
+    <a href="{% url 'merchstore:list_view' %}" class="back-link">← Back to All Products</a>
+  </div>
 {% endblock %}

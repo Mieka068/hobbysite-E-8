@@ -1,28 +1,75 @@
 {% extends 'base.html' %}
 
 {% block title %}Wiki{% endblock %}
+
 {% block content %}
-    <h1>Wiki</h1>
+    <h1 style="text-align: center;">📚 Wiki</h1>
+
+    <!-- Create New Article Button -->
     {% if user.is_authenticated %}
-        <h3>Your Articles</h3>
-            <ul>
-                {% for article in user_articles %}
-                    <li><a href='{{ article.get_absolute_url }}'>{{ article.title }}</a></li>
-                {% empty %}
-                    <p>You have not created any articles.</p>
-                {% endfor %}
-            </ul>
-        <p><a href="{% url 'wiki:article_create' %}">Create New Article</a></p>
+        <div style="text-align: center; margin: 20px 0;">
+            <a href="{% url 'wiki:article_create' %}" class="solid-blue-button">✍️ Create New Article</a>
+        </div>
     {% endif %}
+
+    <!-- Your Articles -->
+    {% if user.is_authenticated %}
+        <section>
+            <h2>📝 Your Articles</h2>
+            {% if user_articles %}
+                <div class="wiki-list-vertical">
+                    {% for article in user_articles %}
+                        <a href="{{ article.get_absolute_url }}" class="grey-box wiki-box">
+                            📄 <strong>{{ article.title }}</strong>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p style="text-align: center; font-style: italic;">You have not created any articles.</p>
+            {% endif %}
+        </section>
+    {% endif %}
+
+    <!-- Articles by Category -->
     {% for category, articles in category_groups.items %}
-        <h3>{{ category.name }}</h3>
-        {{ category.description }}
-        <ul>
-            {% for article in articles %}
-                <li><a href='{{ article.get_absolute_url }}'>{{ article.title }}</a></li>
-            {% empty %}
-                <p>There are currently no articles under this category.</p>
-            {% endfor %}
-        </ul>
+        <section style="margin-top: 40px;">
+            <h2>📂 {{ category.name }}</h2>
+            <p style="margin-bottom: 10px; color: #555;">{{ category.description }}</p>
+
+            {% if articles %}
+                <div class="wiki-list-vertical">
+                    {% for article in articles %}
+                        <a href="{{ article.get_absolute_url }}" class="grey-box wiki-box">
+                            📄 <strong>{{ article.title }}</strong>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p style="text-align: center; font-style: italic;">There are currently no articles under this category.</p>
+            {% endif %}
+        </section>
     {% endfor %}
-{% endblock%}
+
+    <style>
+        .wiki-list-vertical {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-top: 20px;
+        }
+
+        .wiki-box {
+            text-align: left;
+            padding: 16px 20px;
+            font-weight: 500;
+            color: #333;
+            border-left: 5px solid #3498db;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .wiki-box:hover {
+            background-color: #e9e9e9;
+            transform: translateX(2px);
+        }
+    </style>
+{% endblock %}
