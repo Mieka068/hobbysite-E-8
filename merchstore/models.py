@@ -70,7 +70,7 @@ class Transaction(models.Model):
     transaction_status = [
         ("On Cart", "On Cart"),
         ("To Pay", "To Pay"),
-        ("To Ship", "Cancelled"),
+        ("To Ship", "To Ship"),
         ("To Receive", "To Receive"),
         ("Delivered", "Delivered"),
     ]
