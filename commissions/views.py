@@ -81,6 +81,7 @@ class CommissionDetailView(DetailView):
         })
 
         return context
+        
 
 
 @login_required
@@ -182,15 +183,21 @@ class CommissionCreateView(LoginRequiredMixin, CreateView):
         return data
 
     def form_valid(self, form):
-        form.instance.poster = self.request.user
-        response = super().form_valid(form)
         job_formset = self.get_context_data()['job_formset']
-        if job_formset.is_valid():
+
+        if form.is_valid() and job_formset.is_valid():
+            form.instance.poster = self.request.user
+            response = super().form_valid(form)
             job_formset.instance = self.object
             job_formset.save()
+
+            # Only auto-update status if status is Open
+            if self.object.status == 'Open':
+                self.object.update_status()
+
+            return response
         else:
             return self.form_invalid(form)
-        return response
 
 
 class CommissionUpdateView(LoginRequiredMixin, UpdateView):
@@ -208,13 +215,17 @@ class CommissionUpdateView(LoginRequiredMixin, UpdateView):
         return data
 
     def form_valid(self, form):
-        response = super().form_valid(form)
         job_formset = self.get_context_data()['job_formset']
-        if job_formset.is_valid():
-            job_formset.save()
 
-            self.object.update_status()
+        if form.is_valid() and job_formset.is_valid():
+            response = super().form_valid(form)  # Save the commission
+            job_formset.instance = self.object
+            job_formset.save()  # Save the jobs
 
+            # Respect manual status unless it's Open
+            if self.object.status == 'Open':
+                self.object.update_status()
+
+            return response
         else:
             return self.form_invalid(form)
-        return response
