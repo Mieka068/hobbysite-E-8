@@ -57,7 +57,6 @@ class Commission(models.Model):
                 self.save(update_fields=['status'])
 
 
-
 class Job(models.Model):
     commission = models.ForeignKey(Commission, on_delete=models.CASCADE, related_name="jobs")
     role = models.CharField(max_length=255)

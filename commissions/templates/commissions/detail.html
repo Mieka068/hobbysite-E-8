@@ -4,35 +4,34 @@
 
 {% block content %}
 <style>
-.purchase-item {
-  padding: 15px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #fafafa;
-  transition: box-shadow 0.3s;
-  text-align: center; /* ✅ Center everything inside */
-}
+  .purchase-item {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fafafa;
+    transition: box-shadow 0.3s;
+    text-align: center; /* Center everything inside */
+  }
 
-.purchase-item a {
-  display: block; /* Makes the role title occupy full line */
-  font-weight: 600;
-  text-decoration: none;
-  color: #3498db;
-  font-size: 1.1em;
-  margin-bottom: 8px;
-}
+  .purchase-item a {
+    display: block; /* Makes the role title occupy full line */
+    font-weight: 600;
+    text-decoration: none;
+    color: #3498db;
+    font-size: 1.1em;
+    margin-bottom: 8px;
+  }
 
-.purchase-details {
-  margin-top: 8px;
-  font-style: italic;
-  color: #555;
-  text-align: center; /* ✅ Center detail text */
-}
+  .purchase-details {
+    margin-top: 8px;
+    font-style: italic;
+    color: #555;
+    text-align: center; /* Center detail text */
+  }
 
-.purchase-details div {
-  margin-bottom: 5px;
-}
-
+  .purchase-details div {
+    margin-bottom: 5px;
+  }
 
   .job-grid {
     display: grid;
@@ -93,10 +92,13 @@
 <h1 style="text-align: center;">📋 {{ commission.title }}</h1>
 
 <div class="commission-details">
+  <p><strong>Posted by:</strong> {{ commission.poster.get_full_name|default:commission.poster.username }}</p>
   <p><strong>Description:</strong> {{ commission.description }}</p>
   <p><strong>Status:</strong> {{ commission.status }}</p>
-  <p><strong>Created On:</strong> {{ commission.created_on }}</p>
-  <p><strong>Last Updated:</strong> {{ commission.updated_on }}</p>
+  <div style="display: flex; justify-content: space-between; padding: 0 10px;">
+    <p><strong>Created On:</strong> {{ commission.created_on }}</p>
+    <p><strong>Last Updated:</strong> {{ commission.updated_on }}</p>
+  </div>
 
   {% if is_owner %}
     <a href="{% url 'commissions:update' commission.id %}" class="solid-blue-button" style="margin-top: 10px;">

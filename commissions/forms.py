@@ -7,6 +7,7 @@ class JobApplicationForm(forms.ModelForm):
         model = JobApplication
         fields = []  # no fields needed from user, just triggers creation
 
+
 class CommissionForm(forms.ModelForm):
     class Meta:
         model = Commission
@@ -14,6 +15,7 @@ class CommissionForm(forms.ModelForm):
         widgets = {
             'status': forms.Select()
         }
+
 
 JobFormSet = inlineformset_factory(
     Commission, Job,
