@@ -26,7 +26,6 @@ class CommissionListView(ListView):
             default=Value(4),
             output_field=IntegerField(),
         )
-
         return Commission.objects.all().order_by(status_order, '-created_on')
 
     def get_context_data(self, **kwargs):
@@ -43,6 +42,7 @@ class CommissionListView(ListView):
             context["applied_commissions"] = Commission.objects.filter(id__in=applied_commission_ids)
         
         return context
+
 
 class CommissionDetailView(DetailView):
     model = Commission
@@ -83,14 +83,13 @@ class CommissionDetailView(DetailView):
         return context
         
 
-
 @login_required
 def apply_to_job(request, job_id):
     job = get_object_or_404(Job, pk=job_id)
     # Get Profile of the current user
     profile = request.user.profile
 
-    # ❌ Prevent applying to own commission
+    # Prevent applying to own commission
     if job.commission.poster == request.user:
         messages.error(request, "You cannot apply to your own commission's job.")
         return redirect('commissions:detail', pk=job.commission.id)
@@ -110,6 +109,7 @@ def apply_to_job(request, job_id):
     JobApplication.objects.create(job=job, applicant=profile, status='Pending')
     messages.success(request, "You have successfully applied to the job.")
     return redirect('commissions:detail', pk=job.commission.id)
+
 
 @login_required
 def accept_application(request, application_id):
