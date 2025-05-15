@@ -44,14 +44,12 @@
     <div id="forum" class="tab-content" style="display: none;">
         <h2>Forum Posts</h2>
         {% if user_threads %}
-            <ul>
-                {% for thread in user_threads %}
-                    <li>
-                        <a href="{% url 'forum:thread_detail' thread.pk %}"> {{ thread.title }}</a>
-                        <small>(in {{ thread.category.name }})</small>
-                    </li>
-                {% endfor %}
-            </ul>
+            {% for thread in user_threads %}
+                <div class="commission-box">
+                    <a href="{% url 'forum:thread_detail' thread.pk %}">{{ thread.title }}</a>
+                    <small>(in {{ thread.category.name }})</small>
+                </div>
+            {% endfor %}
         {% else %}
             <p>No posts yet.</p>
         {% endif %}
@@ -60,35 +58,79 @@
     <!-- Wiki Tab -->
     <div id="wiki" class="tab-content" style="display: none;">
         <h2>Wiki Contributions</h2>
-        <ul>
+        {% if wiki_articles %}
             {% for article in wiki_articles %}
-                <li><a href='{{ article.get_absolute_url }}'>{{ article.title }}</a></li>
-            {% empty %}
-                <p>You have not made any contributions to the wiki yet.</p>
+                <div class="commission-box">
+                    <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
+                </div>
             {% endfor %}
-        </ul>
+        {% else %}
+            <p>You have not made any contributions to the wiki yet.</p>
+        {% endif %}
     </div>
 
     <!-- Blog Tab -->
     <div id="blog" class="tab-content" style="display: none;">
         <h2>Blog Posts</h2>
-        <ul>
+        {% if blog_articles %}
             {% for article in blog_articles %}
-                <li><a href='{{ article.get_absolute_url }}'>{{ article.title }}</a></li>
-            {% empty %}
-                <p>You have not made any blog articles yet.</p>
+                <div class="commission-box">
+                    <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
+                </div>
             {% endfor %}
-        </ul>
+        {% else %}
+            <p>You have not made any blog articles yet.</p>
+        {% endif %}
     </div>
 
     <style>
+        /* Tab Buttons */
         .tab-button {
-            padding: 5px 10px;
+            padding: 7px 14px;
             border-radius: 5px;
             border: none;
-            background-color: #bdc3c7;  /* grey default */
+            background-color: #bdc3c7;
             color: white;
             cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        .tab-button:hover {
+            background-color: #95a5a6;
+        }
+
+        /* Active Tab Button Styles (set via JS) */
+        .tab-button.active {
+            background-color: #3498db;
+            font-weight: bold;
+            color: white;
+        }
+
+        /* Commission-box style unified for all tabs */
+        .commission-box {
+            background-color: #f4f6f7;
+            border: 1px solid #dcdde1;
+            border-radius: 6px;
+            padding: 12px 18px;
+            margin-bottom: 12px;
+            font-size: 1rem;
+            color: #2c3e50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .commission-box a {
+            font-weight: 600;
+            text-decoration: none;
+            color: #2980b9;
+        }
+        .commission-box a:hover {
+            text-decoration: underline;
+        }
+        .commission-box small {
+            color: #7f8c8d;
+            font-style: italic;
+            margin-left: 10px;
         }
     </style>
 
@@ -99,17 +141,13 @@
             // Show selected tab
             document.getElementById(tabName).style.display = 'block';
 
-            // Reset all buttons to grey
+            // Remove 'active' class from all buttons
             document.querySelectorAll('.tab-button').forEach(btn => {
-                btn.style.backgroundColor = '#bdc3c7';  // grey
-                btn.style.fontWeight = 'normal';
-                btn.style.color = 'white';
+                btn.classList.remove('active');
             });
 
-            // Highlight clicked button (blue)
-            button.style.backgroundColor = '#3498db';  // blue
-            button.style.fontWeight = 'bold';
-            button.style.color = 'white';
+            // Add 'active' class to clicked button
+            button.classList.add('active');
         }
 
         // On page load, highlight the first tab

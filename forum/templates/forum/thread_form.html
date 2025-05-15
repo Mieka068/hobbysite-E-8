@@ -9,26 +9,57 @@
 {% endblock %}
 
 {% block content %}
-    <h1>
+<style>
+  form.thread-form {
+    max-width: 700px;
+    margin: 20px auto 40px auto;
+  }
+
+  form.thread-form button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    display: block;
+    margin: 20px auto 0 auto;
+  }
+
+  h1.thread-header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .back-link-container {
+    max-width: 700px;
+    margin: 10px auto 40px auto;
+    text-align: center;
+  }
+</style>
+
+<h1 class="thread-header">
+    {% if form.instance.pk %}
+        Edit Thread
+    {% else %}
+        Create New Thread
+    {% endif %}
+</h1>
+
+<form method="post" class="thread-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">
         {% if form.instance.pk %}
-            Edit Thread
+            Update Thread
         {% else %}
-            Create New Thread
+            Create Thread
         {% endif %}
-    </h1>
+    </button>
+</form>
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-
-        <button type="submit">
-            {% if form.instance.pk %}
-                Update Thread
-            {% else %}
-                Create Thread
-            {% endif %}
-        </button>
-    </form>
-
-    <p><a href="{% url 'forum:thread_list' %}">Back to thread list</a></p>
+<div class="back-link-container">
+    <a href="{% url 'forum:thread_list' %}" class="back-button">← Back to Threads</a>
+</div>
 {% endblock %}
