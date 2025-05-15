@@ -2,25 +2,7 @@
 {% block title %}Forum Threads{% endblock %}
 
 {% block content %}
-<<<<<<< HEAD
     <h1 style="text-align: center;">💬 Forum Threads</h1>
-=======
-<h1>Threads</h1>
-
-{% if user.is_authenticated %}
-  <p>
-    <a href="{% url 'forum:thread_create' %} class="btn btn-primary>+ Add Thread</a>
-  </p>
-{% endif %}
-
-<ul>
-  {% for thread in user_threads %}
-    <li><a href="{% url 'forum:thread_detail' thread.pk %}">{{ thread.title }}</a></li>
-  {% empty %}
-    <li>No threads yet.</li>
-  {% endfor %}
-</ul>
->>>>>>> 524b53b8d1492c33cae29a57713d9f7ff421e120
 
     <!-- Create Thread Button -->
     {% if user.is_authenticated %}
