@@ -1,12 +1,65 @@
 {% extends 'base.html' %}
 
-{% block title %}{% if view.object %}Create{% else %}Edit{% endif %} Article{% endblock %}
+{% block title %}
+    {% if form.instance.pk %}
+        Edit Article
+    {% else %}
+        Create Article
+    {% endif %}
+{% endblock %}
+
 {% block content %}
-    <h1>Create Article</h1>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Save</button>
-    </form>
-    <p><a href="{% url 'wiki:article_list' %}">Back to Articles</a></p>
+<style>
+  form.article-form {
+    max-width: 700px;
+    margin: 20px auto 40px auto;
+  }
+
+  form.article-form button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    display: block;
+    margin: 20px auto 0 auto;
+  }
+
+  h1.article-header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .back-link-container {
+    max-width: 700px;
+    margin: 10px auto 40px auto;
+    text-align: center;
+  }
+</style>
+
+<h1 class="article-header">
+    {% if form.instance.pk %}
+        Edit Article
+    {% else %}
+        Create New Article
+    {% endif %}
+</h1>
+
+<form method="post" enctype="multipart/form-data" class="article-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">
+        {% if form.instance.pk %}
+            Update
+        {% else %}
+            Publish
+        {% endif %}
+    </button>
+</form>
+
+<div class="back-link-container">
+    <a href="{% url 'wiki:article_list' %}" class="back-button">← Back to Articles</a>
+</div>
 {% endblock %}

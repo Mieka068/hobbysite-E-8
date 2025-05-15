@@ -1,65 +1,125 @@
 {% extends 'base.html' %}
 
-{% block title %}Merchandise Store{% endblock %}
+{% block title %}{{ product.name }} - Merchandise Store{% endblock %}
 
 {% block content %}
-    <header>
-        <h1>Merchandise Store</h1>
-    </header>
+<style>
+  .product-detail-container {
+    max-width: 700px;
+    margin: 30px auto 60px auto;
+    padding: 0 15px;
+  }
 
-    <h2>{{ product.name }}</h2>
-    <p>
-        <b>Seller:</b> <i>{{ product.owner }}</i>
-    </p>
-    <p>
-        <b>Category:</b> <i>{{product.product_type}}</i>
-    </p>
-    <p>
-        <b>Description:</b> <i>{{ product.description }}</i>
-    </p>
-    <p>
-        <b>Price:</b> ${{ product.price }}
-    </p>
-    <p>
-        <b>Stock:</b> {{ product.stock }}
-    </p>
-    <p>
-        <b>Status:</b> {{ product.status }}
-    </p>
+  header h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2.5rem;
+    color: #2c3e50;
+  }
 
-    <nav>
-        <br>     
-        <!-- login/logout buttons -->
-        {% if request.user.is_authenticated %}
+  .product-name {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #34495e;
+  }
 
-        {% else %}
-        Currently logged out. <a href="{% url 'login' %}">Login?</a>
-        {% endif %}
+  .product-info p {
+    font-size: 1.1rem;
+    margin: 8px 0;
+  }
 
-        <!-- redirect links -->
-         <br>
-         {% if product.owner.user != user and product.stock > 0 %}
-            <center>
-                <td><a href="{% url 'merchstore:buy_product_view' product.id %}">{{ 'Buy product?' }}</a></td>
-            </center>
-        {% elif  product.owner.user != user %}
-            <center>
-                <td><a href="{% url 'merchstore:detail_view' product.id %}" style="color: red;">{{ 'Product not available.' }}</a></td>
-            </center>
-        {% endif %}
+  .product-info b {
+    color: #2c3e50;
+  }
 
-        {% if product.owner.user == user %}
-            <center>
-                <td><a href="{% url 'merchstore:edit_product_view' product.id %}">{{ 'Edit Product' }}</a></td>
-            </center>
-        {% endif %}
+  nav {
+    text-align: center;
+    margin-top: 40px;
+  }
 
-        <table align="center">
-            <tr>
-                <td><a href="{% url 'merchstore:add_product_view' %}">{{ ' Sell a Product' }}</a></td>
-                <td>  | </td>
-                <td><a href="{% url 'merchstore:list_view' %}"><p>{{ 'Back to All Products' }}</a></td>
-            </tr>
-        </table>   
-    </nav>  
+  nav a {
+    display: inline-block;
+    margin: 8px 15px;
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+  }
+
+  nav a:hover {
+    background-color: #2980b9;
+  }
+
+  .status {
+    font-weight: 700;
+    color: {% if product.status == "Available" %}green{% else %}red{% endif %};
+  }
+
+  .buy-link, .edit-link, .unavailable-link {
+    margin-top: 20px;
+    font-size: 1.1rem;
+  }
+
+  .buy-link a, .edit-link a {
+    background-color: #27ae60;
+  }
+  .buy-link a:hover, .edit-link a:hover {
+    background-color: #1e8449;
+  }
+
+  .unavailable-link a {
+    background-color: #c0392b;
+    pointer-events: none;
+    cursor: default;
+  }
+</style>
+
+<div class="product-detail-container">
+  <header>
+    <h1>Merchandise Store</h1>
+  </header>
+
+  <h2 class="product-name">{{ product.name }}</h2>
+
+  <div class="product-info">
+    <p><b>Seller:</b> <i>{{ product.owner }}</i></p>
+    <p><b>Category:</b> <i>{{ product.product_type }}</i></p>
+    <p><b>Description:</b> <i>{{ product.description }}</i></p>
+    <p><b>Price:</b> ${{ product.price }}</p>
+    <p><b>Stock:</b> {{ product.stock }}</p>
+    <p><b>Status:</b> <span class="status">{{ product.status }}</span></p>
+  </div>
+
+  <nav>
+    {% if request.user.is_authenticated %}
+      {% if product.owner.user != user and product.stock > 0 %}
+        <div class="buy-link">
+          <a href="{% url 'merchstore:buy_product_view' product.id %}">Buy Product</a>
+        </div>
+      {% elif product.owner.user != user %}
+        <div class="unavailable-link">
+          <a>Product Not Available</a>
+        </div>
+      {% endif %}
+
+      {% if product.owner.user == user %}
+        <div class="edit-link">
+          <a href="{% url 'merchstore:edit_product_view' product.id %}">Edit Product</a>
+        </div>
+      {% endif %}
+    {% else %}
+      <p>Currently logged out. <a href="{% url 'login' %}">Login?</a></p>
+    {% endif %}
+
+    <div style="margin-top: 30px;">
+      <a href="{% url 'merchstore:add_product_view' %}">Sell a Product</a>
+      <a href="{% url 'merchstore:list_view' %}">Back to All Products</a>
+    </div>
+  </nav>
+</div>
 {% endblock %}

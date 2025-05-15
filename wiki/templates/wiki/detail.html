@@ -2,40 +2,202 @@
 {% load static %}
 
 {% block title %}{{ article.title }}{% endblock %}
+
 {% block content %}
-    <p><a href="{% url 'wiki:article_list' %}">Return to list of articles</a></p>
-    <h1>{{ article.title }}</h1>
-    {% if article.header_image %}
-        <img src="{{ article.header_image.url }}" style="max-width: 100%; border-radius: 10px;"><br/>
+<style>
+  /* Container for top buttons */
+  .top-bar {
+    max-width: 700px;
+    margin: 20px auto 10px auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* Title centered */
+  h1.article-title {
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  /* Category tag centered */
+  .category-tag {
+    display: inline-block;
+    background-color: #3498db;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 0.9em;
+    font-weight: bold;
+    margin: 0 auto 15px auto;
+    text-align: center;
+  }
+
+  /* Created and Updated dates container */
+  .dates-container {
+    max-width: 700px;
+    margin: 0 auto 20px auto;
+    font-style: italic;
+    color: #555;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9em;
+  }
+
+  /* Header image container */
+  .article-header-image {
+    text-align: center;
+    margin-bottom: 15px;
+  }
+  .article-header-image img {
+    max-width: 100%;
+    border-radius: 10px;
+  }
+
+  /* Author info */
+  .author-info {
+    max-width: 700px;
+    margin: 0 auto 25px auto;
+    font-style: italic;
+    color: #555;
+    font-size: 0.95em;
+    text-align: left;
+  }
+
+  /* Article body styling */
+  .article-body {
+    max-width: 700px;
+    margin: 0 auto 40px auto;
+    padding: 0 15px;
+    line-height: 1.6;
+    font-size: 1.05em;
+    white-space: normal;
+    word-wrap: break-word;
+  }
+
+  /* Related articles list */
+  .commissions-list {
+    max-width: 700px;
+    margin: 0 auto 40px auto;
+  }
+  .commission-box {
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fafafa;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  }
+  .commission-box a {
+    font-weight: 600;
+    text-decoration: none;
+    color: #3498db;
+    font-size: 1.1em;
+  }
+
+  /* Comments container */
+  .comments {
+    max-width: 700px;
+    margin: 0 auto 40px auto;
+  }
+  .comment-box {
+    border-top: 1px solid #ddd;
+    padding: 15px 20px;
+  }
+  .comment-box p {
+    margin: 5px 0;
+  }
+  .timestamp {
+    color: #999;
+    font-size: 0.85em;
+  }
+
+  /* Comment form styling */
+  form {
+    max-width: 700px;
+    margin: 20px auto 40px auto;
+  }
+  form button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    display: block;
+    margin: 20px auto 0 auto;
+  }
+</style>
+
+<div class="top-bar">
+  <a href="{% url 'wiki:article_list' %}" class="back-button">← Back to Articles</a>
+  {% if article.author == user.profile %}
+    <a href="{% url 'wiki:article_update' article.pk %}" class="back-button">✏️ Edit Article</a>
+  {% else %}
+    <div></div>  {# keep spacing #}
+  {% endif %}
+</div>
+
+<h1 class="article-title">{{ article.title }}</h1>
+
+<div class="category-tag">{{ article.category.name }}</div>
+
+<div class="dates-container">
+  <div><strong>Created:</strong> {{ article.created_on|date:"F j, Y, g:i a" }}</div>
+  <div>
+    {% if article.created_on|date:"Y-m-d H:i" != article.updated_on|date:"Y-m-d H:i" %}
+      <strong>Updated:</strong> {{ article.updated_on|date:"F j, Y, g:i a" }}
     {% endif %}
-    Created on: {{ article.created_on }} /
-    Last updated on: {{ article.updated_on }}
-    {% if profile == article.author %}
-        <p><a href="{% url 'wiki:article_update' article.id %}">Edit Article</a></p>
-    {% endif %}
-    <p>{{ article.entry }}</p>
-    <h3>Read more from {{ article.category.name }}</h3>
-    <ul>
-        {% for readmore in other_articles %}
-            <li><a href='{{ readmore.get_absolute_url }}'>{{ readmore.title }}</a></li>
-        {% empty %}
-            <p>There are no other articles in this category.</p>
-        {% endfor %}
-    </ul>
-    {% if user.is_authenticated %}
-        <h3>Create a Comment</h3>
-        <form method="post">
-            {% csrf_token %}
-            {{ comment_form }}
-            <button type="submit">Post</button>
-        </form>
-    {% endif %}
-    <h3>Comments</h3>
-    {% for comment in article.comments.all %}
-        <strong>{{ comment.author }}</strong><br/>
-        {{ comment.entry }}<br/>
-        Created On: {{ comment.created_on }} / Last Updated On: {{ comment.updated_on}}<br/><br/>
-    {% empty %}
-        <p>No one has left a comment.</p>
-    {% endfor %}
+  </div>
+</div>
+
+{% if article.header_image %}
+  <div class="article-header-image">
+    <img src="{{ article.header_image.url }}" alt="Header Image">
+  </div>
+{% endif %}
+
+<div class="author-info">
+  <strong>Written by:</strong> {{ article.author }}
+</div>
+
+<div class="article-body">
+  <p>{{ article.entry|linebreaksbr }}</p>
+</div>
+
+<h2 style="text-align: center; margin-bottom: 20px;">Want to see more like this?</h2>
+<div class="commissions-list">
+  {% for other_article in other_articles %}
+    <div class="commission-box">
+      <a href="{{ other_article.get_absolute_url }}">{{ other_article.title }}</a>
+    </div>
+  {% empty %}
+    <p>It seems the author has no other articles.</p>
+  {% endfor %}
+</div>
+
+<h1 style="text-align: center; margin-bottom: 20px;">Comments</h1>
+
+{% if user.is_authenticated %}
+  <form method="post">
+    {% csrf_token %}
+    {{ comment_form.as_p }}
+    <button type="submit">Submit</button>
+  </form>
+{% else %}
+  <p style="text-align: center;"><a href="{% url 'accounts:login' %}">Log in</a> to leave a comment.</p>
+{% endif %}
+
+<div class="comments">
+  {% for comment in article.comments.all %}
+    <div class="comment-box">
+      <p><strong>{{ comment.author }}</strong> <span class="timestamp">| {{ comment.created_on|date:"F j, Y, g:i a" }}</span></p>
+      <p>{{ comment.entry|linebreaksbr }}</p>
+    </div>
+  {% empty %}
+    <p>No comments yet.</p>
+  {% endfor %}
+</div>
+
 {% endblock %}
