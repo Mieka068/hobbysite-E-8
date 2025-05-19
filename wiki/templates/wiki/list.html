@@ -40,7 +40,7 @@
                 <div class="wiki-list-vertical">
                     {% for article in articles %}
                         <a href="{{ article.get_absolute_url }}" class="grey-box wiki-box">
-                        📰 <strong>{{ article.title }}</strong> <span class="tag">by you</span>
+                        📰 <strong>{{ article.title }}</strong> <span class="tag">by {{ article.author }}</span>
                         </a>
                     {% endfor %}
                 </div>
